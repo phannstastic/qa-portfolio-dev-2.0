@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Muhammad Irfan Trinugroho — Quality Assurance Engineer & Test Automation Specialist. Explore Cypress E2E, Katalon Studio, Postman API testing, and manual QA portfolio.">
+  <meta name="author" content="Muhammad Irfan Trinugroho">
+  <title>irfanLab — QA Automation &amp; Testing Portfolio 2.0</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/favicon-32x32.png">
+
+  <!-- Google Fonts: Inter, Plus Jakarta Sans, Noto Sans KR, Lora -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@1,400;1,500;1,600&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Sans+JP:wght@500;700&family=Noto+Sans+SC:wght@500;700&family=Noto+Sans+Arabic:wght@600;700&family=Noto+Sans+Devanagari:wght@600;700&family=Noto+Sans+Thai:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Cache Control -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- Minimalist 2.0 Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css?v=2.0.3">
+</head>
+
+<body>
+
+  <!-- =========================================================================
+       1. IPHONE ACTIVATION / HANGUL OPENING SEQUENCE (Disabled by default, preserved for future toggle)
+       ========================================================================= -->
+  <div id="activation-overlay" class="activation-overlay dismissed" style="display: none;"
+    aria-label="Welcome Intro Screen">
+    <div class="activation-glow"></div>
+    <div class="activation-container">
+      <div class="activation-brackets-wrap">
+        <span class="activation-bracket">「</span>
+        <div class="activation-text-viewport">
+          <span id="activation-text" class="activation-text">안녕하세요</span>
+        </div>
+        <span class="activation-bracket">」</span>
+      </div>
+      <p id="activation-subtext" class="activation-subtext">Initializing Portfolio 2.0</p>
+      <div class="activation-progress-bar">
+        <div id="activation-progress" class="activation-progress-fill"></div>
+      </div>
+    </div>
+    <button id="activation-skip-btn" class="activation-skip-btn" aria-label="Skip Introduction">
+      <span>Skip</span>
+      <span class="key-hint">ESC</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- =========================================================================
+       2. MINIMALIST SITE HEADER (Clean Image 1 Style: "irfan." / Socials / "Hit me up")
+       ========================================================================= -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#hero" class="brand-mark" aria-label="irfanLab Home">
+        <span class="brand-text">irfan<span class="brand-lab">Lab</span><span class="brand-dot">.</span></span>
+      </a>
+
+      <div class="header-actions">
+        <!-- Header Social Icons (clean, aligned, subtle) -->
+        <a href="https://github.com/phannstastic" target="_blank" rel="noopener noreferrer" class="header-social-icon"
+          aria-label="GitHub Profile" title="GitHub (@phannstastic)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+            </path>
+          </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/muhirfant/" target="_blank" rel="noopener noreferrer"
+          class="header-social-icon" aria-label="LinkedIn Profile" title="LinkedIn Profile">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+            <rect x="2" y="9" width="4" height="12"></rect>
+            <circle cx="4" cy="4" r="2"></circle>
+          </svg>
+        </a>
+        <a href="https://www.instagram.com/irfantrinugroho/" target="_blank" rel="noopener noreferrer"
+          class="header-social-icon" aria-label="Instagram Profile" title="Instagram Profile">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+        </a>
+
+        <!-- Hit me up / Get in touch button (Image 1 style, rounded-full) -->
+        <a href="#contact" class="btn-hit-me-up">
+          <span>Hit me up</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       3. MAIN CONTENT (Strict order: Hero -> Experience -> Project -> Skill -> Contact)
+       ========================================================================= -->
+  <main>
+    <!-- =======================================================================
+         SECTION 1: HERO (Image 1 Inspired Layout + Multilingual Morphing Name)
+         ======================================================================= -->
+    <section id="hero" class="hero-section">
+      <div class="container hero-container">
+        <!-- Minimalist Welcome Tag with Gold Dot Accent -->
+        <div class="hero-welcome-badge">
+          <span class="welcome-text">WELCOME</span>
+          <span class="welcome-gold-dot">●</span>
+        </div>
+
+        <!-- Main Headline: Concise 3 lines, SemiBold, no underline, no icon (Option 1) -->
+        <h1 class="hero-headline">
+          Hi, I'm <span class="morphing-name-wrapper"><span class="name-bracket">「</span><span id="morphing-name"
+              class="morphing-name" title="Click to cycle name script">Irfan</span><span
+              class="name-bracket">」</span></span> — a QA Engineer<br class="headline-break">
+          crafting <span class="highlight-italic">automated testing</span> &amp;<br class="headline-break">
+          bulletproof software.
+        </h1>
+
+        <!-- Short, Punchy Description (Focused on core value, 2 lines) -->
+        <p id="hero-bio" class="hero-description">
+          Informatics graduate experienced in manual functional testing, UAT support, and test automation. Passionate
+          about ensuring seamless software quality from end to end.
+        </p>
+
+        <!-- Hero Actions Group (Option A: 2 equal-height buttons side-by-side) -->
+        <div class="hero-cta-group">
+          <a href="#projects" class="btn-hero-primary" id="btn-hero-work">
+            <span>Check out my work</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+          </a>
+
+          <a href="/docs/cv-muhammad-irfan-trinugroho.pdf" target="_blank" rel="noopener noreferrer"
+            class="btn-hero-secondary" id="btn-hero-cv" title="Download Official CV / Resume">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Download CV</span>
+          </a>
+        </div>
+
+        <!-- Muted "Previously At" Trust Strip (Separated into 2 elegant lines) -->
+        <div class="hero-clients-strip">
+          <span class="clients-label">PREVIOUSLY TESTING AT</span>
+          <div class="clients-list">
+            <span class="client-name">Noctura Kreasi Sistema</span>
+            <span class="clients-dot">•</span>
+            <span class="client-name">PT Vortex Buana Edumedia</span>
+            <span class="clients-dot">•</span>
+            <span class="client-name">PT Len Industri (Persero)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         FLOATING PILL NAVIGATION DOCK (Inspired by Image 1 "Home Work About Contact")
+         ======================================================================= -->
+    <nav class="floating-nav-dock" aria-label="Floating Primary Navigation">
+      <ul class="dock-links">
+        <li><a href="#hero" class="dock-link active" data-section="hero">Home</a></li>
+        <li><a href="#experience" class="dock-link" data-section="experience">Experience</a></li>
+        <li><a href="#projects" class="dock-link" data-section="projects">Projects</a></li>
+        <li><a href="#skills" class="dock-link" data-section="skills">Skills</a></li>
+        <li><a href="#contact" class="dock-link" data-section="contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- =======================================================================
+         SECTION 2: EXPERIENCE (Order: hero -> experience -> projek -> skill -> contact)
+         ======================================================================= -->
+    <section id="experience" class="content-section experience-section">
+      <div class="container">
+        <header class="section-heading-minimal">
+          <div class="section-tag-row">
+            <span class="section-tag">CAREER JOURNEY</span>
+          </div>
+          <h2 class="section-title">Work Experiences</h2>
+          <p class="section-subtext">Hands-on QA engineering roles, achievements, and responsibilities across startups
+            &amp; state-owned enterprises.</p>
+        </header>
+
+        <div id="experiences-container" class="experiences-minimal-list">
+          <!-- Populated dynamically via GET /api/experiences with fallback -->
+          <div class="skeleton-card" style="height: 140px;"></div>
+          <div class="skeleton-card" style="height: 140px;"></div>
+          <div class="skeleton-card" style="height: 140px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SECTION 3: PROJECTS (Order: hero -> experience -> projek -> skill -> contact)
+         ======================================================================= -->
+    <section id="projects" class="content-section">
+      <div class="container">
+        <header class="section-heading-minimal">
+          <div class="section-tag-row">
+            <span class="section-tag">SHOWCASE</span>
+          </div>
+          <h2 class="section-title">Portfolio Projects</h2>
+          <p class="section-subtext">Automated test frameworks, Postman REST suites, Katalon UI test benches, and manual
+            QA cases.</p>
+        </header>
+
+        <!-- Projects Horizontal Slider (Slide Kanan-Kiri) -->
+        <div class="projects-slider-wrapper">
+          <div class="slider-header-controls">
+            <div class="slider-counter" id="projects-counter">
+              <span class="slider-counter-dot"></span>
+              <span id="projects-counter-text">Showing projects</span>
+            </div>
+            <div class="slider-btn-group">
+              <button type="button" class="slider-nav-btn prev" id="btn-projects-prev"
+                aria-label="Slide Left (Previous Project)" title="Slide Left">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button type="button" class="slider-nav-btn next" id="btn-projects-next"
+                aria-label="Slide Right (Next Project)" title="Slide Right">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="projects-container" class="projects-slider-track">
+            <!-- Populated dynamically via GET /api/projects with fallback -->
+            <div class="skeleton-card" style="height: 380px; min-width: 300px;"></div>
+            <div class="skeleton-card" style="height: 380px; min-width: 300px;"></div>
+            <div class="skeleton-card" style="height: 380px; min-width: 300px;"></div>
+          </div>
+
+          <div id="projects-slider-dots" class="projects-slider-dots"></div>
+        </div>
+
+        <!-- Google Drive Complete Archive Card -->
+        <div class="drive-archive-card">
+          <div class="drive-archive-text">
+            <div class="drive-tag">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span>Repository &amp; Document Archive</span>
+            </div>
+            <h3 class="drive-title">Explore Complete QA Test Suites &amp; Evidence on Google Drive</h3>
+            <p class="drive-desc">Looking for detailed test scenarios, Cypress test runs, Katalon execution logs,
+              Postman collection exports, and PDF reports? Browse the full cloud archive.</p>
+          </div>
+          <a href="https://drive.google.com/drive/folders/1pmYXm-BRgx7-NTrwBj92_se_tFxjINm6?usp=drive_link"
+            target="_blank" rel="noopener noreferrer" class="btn-drive-cta">
+            <span>Open Google Drive</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SECTION 4: SKILL (Order: hero -> experience -> projek -> skill -> contact)
+         ======================================================================= -->
+    <section id="skills" class="content-section skills-section">
+      <div class="container">
+        <header class="section-heading-minimal">
+          <div class="section-tag-row">
+            <span class="section-tag">COMPETENCIES</span>
+          </div>
+          <h2 class="section-title">Technical Skills</h2>
+          <p class="section-subtext">Testing frameworks, automation engines, QA methodologies, and development
+            technologies.</p>
+        </header>
+
+        <div id="skills-container" class="skills-wrapper">
+          <!-- Populated dynamically via GET /api/skills with fallback -->
+          <div class="skeleton-card" style="height: 180px;"></div>
+          <div class="skeleton-card" style="height: 180px;"></div>
+          <div class="skeleton-card" style="height: 180px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SECTION 5: CONTACT (Order: hero -> experience -> projek -> skill -> contact)
+         ======================================================================= -->
+    <section id="contact" class="content-section contact-section">
+      <div class="container">
+        <header class="section-heading-minimal">
+          <div class="section-tag-row">
+            <span class="section-tag">GET IN TOUCH</span>
+          </div>
+          <h2 class="section-title">Let's Collaborate</h2>
+          <p class="section-subtext">Open to QA Engineer positions, test automation consulting, and freelance testing
+            inquiries.</p>
+        </header>
+
+        <div class="contact-grid-wrap">
+          <!-- Contact Form (Directly connects to POST /api/contacts) -->
+          <div class="contact-form-panel">
+            <div id="contact-feedback" class="feedback-banner" role="alert"></div>
+
+            <form id="contact-form" novalidate>
+              <div class="input-field">
+                <label for="contact-name">Your Full Name <span class="required">*</span></label>
+                <input type="text" id="contact-name" name="name" placeholder="e.g. Jane Doe" required
+                  autocomplete="name">
+                <span class="field-error" id="name-error"></span>
+              </div>
+
+              <div class="input-field">
+                <label for="contact-email">Email Address <span class="required">*</span></label>
+                <input type="email" id="contact-email" name="email" placeholder="e.g. jane@company.com" required
+                  autocomplete="email">
+                <span class="field-error" id="email-error"></span>
+              </div>
+
+              <div class="input-field">
+                <label for="contact-subject">Subject</label>
+                <input type="text" id="contact-subject" name="subject" placeholder="e.g. QA Automation Opportunity"
+                  autocomplete="off">
+              </div>
+
+              <div class="input-field">
+                <label for="contact-message">Message <span class="required">*</span></label>
+                <textarea id="contact-message" name="message" rows="5"
+                  placeholder="Share details about your QA requirements, timeline, or position..." required></textarea>
+                <div class="field-meta">
+                  <span class="field-error" id="message-error"></span>
+                  <span class="char-counter" id="char-counter">0 / 500</span>
+                </div>
+              </div>
+
+              <button type="submit" id="contact-submit-btn" class="btn-submit-contact">
+                <span class="btn-text">Send Message</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <!-- Direct Information Panel -->
+          <div class="contact-direct-panel">
+            <div class="direct-card">
+              <span class="direct-label">DIRECT EMAIL</span>
+              <a href="mailto:rphannfvs@gmail.com" class="direct-value email-value">
+                rphannfvs@gmail.com
+              </a>
+              <p class="direct-sub">Fastest response for interview invitations and project discussions.</p>
+            </div>
+
+            <div class="direct-card">
+              <span class="direct-label">LOCATION</span>
+              <p class="direct-value">Sleman, Yogyakarta, Indonesia</p>
+              <p class="direct-sub">Available for Remote (Worldwide) and On-site opportunities.</p>
+            </div>
+
+            <div class="direct-card">
+              <span class="direct-label">CONNECT ACROSS PLATFORMS</span>
+              <div class="direct-socials-row">
+                <a href="https://github.com/phannstastic" target="_blank" rel="noopener noreferrer"
+                  class="direct-social-chip">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                    </path>
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+                <a href="https://www.linkedin.com/in/muhirfant/" target="_blank" rel="noopener noreferrer"
+                  class="direct-social-chip">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                    <rect x="2" y="9" width="4" height="12"></rect>
+                    <circle cx="4" cy="4" r="2"></circle>
+                  </svg>
+                  <span>LinkedIn</span>
+                </a>
+                <a href="https://www.instagram.com/irfantrinugroho/" target="_blank" rel="noopener noreferrer"
+                  class="direct-social-chip">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                  </svg>
+                  <span>Instagram</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+       4. PROJECT DETAIL MODAL DIALOG
+       ========================================================================= -->
+  <div id="project-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-project-title">
+    <div class="modal-dialog">
+      <button id="modal-close-btn" class="modal-close-btn" aria-label="Close dialog">&times;</button>
+      <div id="modal-body" class="modal-body-content">
+        <!-- Populated dynamically via GET /api/projects/:slug -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       5. MINIMALIST SITE FOOTER
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <span class="footer-brand">irfan<span class="footer-lab">Lab</span><span class="footer-dot">.</span></span>
+        <p class="footer-copy">&copy; 2026 Muhammad Irfan Trinugroho</p>
+      </div>
+
+      <div class="footer-right">
+        <a href="#hero" class="footer-back-top" aria-label="Back to Top">
+          <span>Back to Top</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Frontend Logic -->
+  <script src="/js/app.js?v=2.0.3"></script>
+</body>
+
+</html>

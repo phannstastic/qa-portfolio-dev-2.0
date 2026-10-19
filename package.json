@@ -1,0 +1,35 @@
+{
+  "name": "qa-portfolio-elysia",
+  "version": "0.1.0",
+  "description": "Personal QA Portfolio CMS built with ElysiaJS, Drizzle ORM, and MySQL",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "build": "bun build src/index.ts --outdir ./dist --target bun",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:e2e": "bun tests/e2e/run-e2e.ts tests/e2e/features/**/*.feature",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bun src/db/migrate.ts",
+    "db:seed": "bun src/db/seed.ts"
+  },
+  "dependencies": {
+    "@elysiajs/jwt": "^1.4.2",
+    "@elysiajs/static": "^1.4.10",
+    "@elysiajs/swagger": "^1.2.0",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.40.0",
+    "elysia": "^1.2.25",
+    "mysql2": "^3.12.0"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^13.3.0",
+    "@types/bun": "latest",
+    "@types/selenium-webdriver": "^4.35.7",
+    "drizzle-kit": "^0.30.5",
+    "selenium-webdriver": "^4.51.0",
+    "typescript": "^5.7.3"
+  }
+}

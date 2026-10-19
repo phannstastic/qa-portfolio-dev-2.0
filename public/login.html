@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin Authentication Portal for irfan.Lab">
+  <title>Admin Login &bull; irfan.Lab</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/favicon-32x32.png">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core & Admin Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <div class="login-page-wrap">
+    <div class="login-card">
+      <div class="login-brand-header">
+        <div style="display: flex; justify-content: center; margin-bottom: 0.75rem;">
+          <a href="/" class="brand-logo" aria-label="Back to irfanLab">
+            <span>irfan<span style="font-weight: 800;">Lab</span><span style="color: #F59E0B; font-weight: 900;">.</span></span>
+            <span class="brand-badge">CMS</span>
+          </a>
+        </div>
+        <h1>Admin Portal</h1>
+        <p>Sign in to manage projects, experiences, and messages</p>
+      </div>
+
+      <!-- Feedback alert banner -->
+      <div id="login-feedback" class="feedback-banner" role="alert" style="display: none;"></div>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label for="login-email" class="form-label">
+            Email Address <span class="req">*</span>
+          </label>
+          <input
+            type="email"
+            id="login-email"
+            class="form-input"
+            placeholder="admin@example.com"
+            required
+            autocomplete="email"
+            maxlength="191"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="login-password" class="form-label">
+            Password <span class="req">*</span>
+          </label>
+          <input
+            type="password"
+            id="login-password"
+            class="form-input"
+            placeholder="Enter your password"
+            required
+            autocomplete="current-password"
+            maxlength="255"
+          >
+        </div>
+
+        <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+          Sign In to Dashboard
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.75rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
+        <a href="/" style="font-size: 0.85rem; color: var(--text-muted); transition: color 0.2s ease;">
+          &larr; Back to irfan.Lab
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Admin Script -->
+  <script src="/js/admin.js"></script>
+</body>
+</html>

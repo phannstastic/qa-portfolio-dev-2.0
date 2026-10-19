@@ -1,0 +1,12 @@
+{
+  "default": {
+    "import": [
+      "tests/e2e/support/hooks.ts",
+      "tests/e2e/steps/auth.steps.ts",
+      "tests/e2e/steps/projects.steps.ts",
+      "tests/e2e/steps/contact.steps.ts"
+    ],
+    "format": ["summary", "progress"],
+    "publishQuiet": true
+  }
+}

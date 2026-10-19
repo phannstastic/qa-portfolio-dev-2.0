@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#7c2d12" />
+    </linearGradient>
+    <linearGradient id="cardOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#27272a" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#1c1917" stop-opacity="0.95" />
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bgOrange)" />
+
+  <g stroke="#f97316" stroke-width="0.8" opacity="0.2">
+    <line x1="0" y1="100" x2="800" y2="100" />
+    <line x1="0" y1="200" x2="800" y2="200" />
+    <line x1="0" y1="300" x2="800" y2="300" />
+    <line x1="200" y1="0" x2="200" y2="450" />
+    <line x1="600" y1="0" x2="600" y2="450" />
+  </g>
+
+  <!-- Container Box -->
+  <rect x="60" y="45" width="680" height="360" rx="12" fill="url(#cardOrange)" stroke="#ea580c" stroke-width="1.5" />
+
+  <!-- Header -->
+  <rect x="60" y="45" width="680" height="42" rx="12" fill="#271c19" />
+  <circle cx="90" cy="66" r="6" fill="#ef4444" />
+  <circle cx="110" cy="66" r="6" fill="#f59e0b" />
+  <circle cx="130" cy="66" r="6" fill="#10b981" />
+  <text x="400" y="72" fill="#fdba74" font-family="Inter, sans-serif" font-size="13" font-weight="600" text-anchor="middle">Katalon Studio &bull; OrangeHRM Authentication Automation</text>
+
+  <!-- Content -->
+  <text x="100" y="140" fill="#ffffff" font-family="Outfit, Inter, sans-serif" font-size="24" font-weight="700">OrangeHRM Login Automation</text>
+  <text x="100" y="170" fill="#fb923c" font-family="Inter, sans-serif" font-size="14" font-weight="600">UI Regression Suite &bull; Dynamic Locators &amp; Negative Assertions</text>
+
+  <!-- Metrics Grid -->
+  <rect x="100" y="195" width="180" height="90" rx="8" fill="#431407" stroke="#ea580c" stroke-width="1" />
+  <text x="120" y="225" fill="#fed7aa" font-family="Inter, sans-serif" font-size="12">MODULE VERIFIED</text>
+  <text x="120" y="260" fill="#fb923c" font-family="Inter, sans-serif" font-size="18" font-weight="700">Auth / Login Form</text>
+
+  <rect x="300" y="195" width="180" height="90" rx="8" fill="#431407" stroke="#ea580c" stroke-width="1" />
+  <text x="320" y="225" fill="#fed7aa" font-family="Inter, sans-serif" font-size="12">AUTOMATION TOOLS</text>
+  <text x="320" y="260" fill="#fb923c" font-family="Inter, sans-serif" font-size="18" font-weight="700">Katalon Studio</text>
+
+  <rect x="500" y="195" width="180" height="90" rx="8" fill="#431407" stroke="#ea580c" stroke-width="1" />
+  <text x="520" y="225" fill="#fed7aa" font-family="Inter, sans-serif" font-size="12">DEFECT DOCUMENTATION</text>
+  <text x="520" y="260" fill="#10b981" font-family="Inter, sans-serif" font-size="18" font-weight="700">Test Case Sheet</text>
+
+  <!-- Result Banner -->
+  <rect x="100" y="315" width="580" height="50" rx="8" fill="#1c0e09" stroke="#9a3412" stroke-width="1" />
+  <text x="125" y="345" fill="#fb923c" font-family="monospace" font-size="13">VERIFIED</text>
+  <text x="200" y="345" fill="#fed7aa" font-family="monospace" font-size="13">Positive login, invalid credentials alert, empty input validation</text>
+</svg>
