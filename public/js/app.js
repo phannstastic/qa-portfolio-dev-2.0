@@ -1203,9 +1203,76 @@ function initTabBranding() {
 }
 
 // =============================================================================
+// Theme Switcher (Light & Dark Mode with Smooth Micro-Interaction)
+// =============================================================================
+function initTheme() {
+  const toggleBtn = document.getElementById('theme-toggle-btn');
+  if (!toggleBtn) return;
+
+  function getSystemTheme() {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme, animate = false) {
+    if (animate) {
+      document.documentElement.classList.add('theme-transition');
+      window.clearTimeout(window.__themeTransitionTimeout);
+      window.__themeTransitionTimeout = window.setTimeout(() => {
+        document.documentElement.classList.remove('theme-transition');
+      }, 350);
+    }
+
+    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      toggleBtn.setAttribute('aria-label', 'Switch to light mode');
+      toggleBtn.setAttribute('title', 'Switch to light mode (Current: Dark)');
+    } else {
+      document.documentElement.classList.remove('dark');
+      toggleBtn.setAttribute('aria-label', 'Switch to dark mode');
+      toggleBtn.setAttribute('title', 'Switch to dark mode (Current: Light)');
+    }
+  }
+
+  // Detect current active theme from attribute (applied by head script) or storage or OS
+  const currentAttr = document.documentElement.getAttribute('data-theme');
+  const storedTheme = localStorage.getItem('theme');
+  const activeTheme = currentAttr || storedTheme || getSystemTheme();
+  applyTheme(activeTheme, false);
+
+  // Toggle button click listener
+  toggleBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    try {
+      localStorage.setItem('theme', next);
+    } catch (e) {
+      // LocalStorage access might fail in restricted environments
+    }
+    applyTheme(next, true);
+  });
+
+  // Dynamic OS theme change listener (respects OS if user hasn't explicitly set preference)
+  if (window.matchMedia) {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemChange = (e) => {
+      if (!localStorage.getItem('theme')) {
+        applyTheme(e.matches ? 'dark' : 'light', true);
+      }
+    };
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleSystemChange);
+    } else if (typeof mediaQuery.addListener === 'function') {
+      mediaQuery.addListener(handleSystemChange);
+    }
+  }
+}
+
+// =============================================================================
 // INITIALIZATION
 // =============================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   initActivationIntro();
   initMorphingName();
   loadProfile();

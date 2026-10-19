@@ -14,6 +14,10 @@
   --bg-card: #FFFFFF;
   --bg-card-hover: #FBFBFB;
   --bg-modal-backdrop: rgba(0, 0, 0, 0.82);
+  --bg-header: rgba(255, 255, 255, 0.88);
+  --border-header: var(--border-subtle);
+  --bg-dock: rgba(255, 255, 255, 0.85);
+  --border-dock: rgba(0, 0, 0, 0.08);
 
   /* Borders & Dividers */
   --border-subtle: #EBEBEB;
@@ -60,6 +64,86 @@
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --transition-fast: 0.18s ease;
   --transition-medium: 0.28s var(--ease-smooth);
+}
+
+/* --------------------------------------------------------------------------
+   Dark Theme Design Tokens (Obsidian / Zinc Editorial Luxury)
+   -------------------------------------------------------------------------- */
+html[data-theme="dark"],
+html.dark {
+  color-scheme: dark;
+  --bg-primary: #09090B;
+  --bg-secondary: #111114;
+  --bg-card: #141418;
+  --bg-card-hover: #1B1B22;
+  --bg-modal-backdrop: rgba(0, 0, 0, 0.88);
+  --bg-header: rgba(9, 9, 11, 0.88);
+  --border-header: var(--border-subtle);
+  --bg-dock: rgba(18, 18, 22, 0.85);
+  --border-dock: rgba(255, 255, 255, 0.12);
+
+  /* Borders & Dividers */
+  --border-subtle: #222228;
+  --border-medium: #30303A;
+  --border-dark: #E4E4E7;
+  --border-focus: #F4F4F5;
+
+  /* Typography Colors */
+  --text-primary: #F4F4F5;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+  --text-inverse: #09090B;
+
+  /* Brand Accents */
+  --accent-black: #F4F4F5;
+  --accent-gold: #FACC15;
+  --accent-gold-subtle: rgba(250, 204, 21, 0.14);
+  --accent-hangul: #EAB308;
+  --accent-success: #34D399;
+  --accent-error: #F87171;
+
+  /* Elevation & Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 6px 16px -2px rgba(0, 0, 0, 0.65);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.8);
+  --shadow-dock: 0 12px 36px -6px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg-primary: #09090B;
+    --bg-secondary: #111114;
+    --bg-card: #141418;
+    --bg-card-hover: #1B1B22;
+    --bg-modal-backdrop: rgba(0, 0, 0, 0.88);
+    --bg-header: rgba(9, 9, 11, 0.88);
+    --border-header: var(--border-subtle);
+    --bg-dock: rgba(18, 18, 22, 0.85);
+    --border-dock: rgba(255, 255, 255, 0.12);
+
+    --border-subtle: #222228;
+    --border-medium: #30303A;
+    --border-dark: #E4E4E7;
+    --border-focus: #F4F4F5;
+
+    --text-primary: #F4F4F5;
+    --text-secondary: #A1A1AA;
+    --text-muted: #71717A;
+    --text-inverse: #09090B;
+
+    --accent-black: #F4F4F5;
+    --accent-gold: #FACC15;
+    --accent-gold-subtle: rgba(250, 204, 21, 0.14);
+    --accent-hangul: #EAB308;
+    --accent-success: #34D399;
+    --accent-error: #F87171;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 6px 16px -2px rgba(0, 0, 0, 0.65);
+    --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.8);
+    --shadow-dock: 0 12px 36px -6px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -302,17 +386,17 @@ input, textarea, select {
   position: sticky;
   top: 0;
   z-index: 90;
-  background: rgba(250, 249, 246, 0.88);
+  background: var(--bg-header);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-header);
   transition: all var(--transition-fast);
 }
 
 .header-inner {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 1.25rem 2rem;
+  padding: 1.15rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -346,23 +430,25 @@ input, textarea, select {
 }
 
 .brand-dot {
-  color: var(--accent-black);
+  color: var(--accent-gold);
   font-weight: 900;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
 }
 
 .header-social-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
   color: var(--text-muted);
   transition: all var(--transition-fast);
-  padding: 0.3rem;
+  padding: 0;
   border-radius: var(--radius-full);
 }
 
@@ -371,12 +457,84 @@ input, textarea, select {
   transform: translateY(-1px);
 }
 
+/* Theme Toggle Button (Light & Dark Mode) */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-black);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-toggle-btn svg {
+  position: absolute;
+  transition: transform 0.35s var(--ease-bounce), opacity 0.25s ease, color var(--transition-fast);
+}
+
+/* Light mode state: Moon icon visible, Sun icon rotated and scaled out */
+html:not([data-theme="dark"]) .theme-icon-sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.4);
+  pointer-events: none;
+}
+
+html:not([data-theme="dark"]) .theme-icon-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* Dark mode state: Sun icon visible with gold accent, Moon icon rotated and scaled out */
+html[data-theme="dark"] .theme-icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+  color: var(--accent-gold);
+}
+
+html[data-theme="dark"] .theme-icon-moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .theme-icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+    color: var(--accent-gold);
+  }
+  html:not([data-theme="light"]) .theme-icon-moon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.4);
+    pointer-events: none;
+  }
+}
+
 .btn-hit-me-up {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.55rem 1.25rem;
-  border-radius: var(--radius-full); /* Unified rounded-full */
+  height: 36px;
+  padding: 0 1.25rem;
+  border-radius: var(--radius-full);
   border: 1px solid var(--border-medium);
   background: var(--bg-card);
   color: var(--text-primary);
@@ -384,6 +542,8 @@ input, textarea, select {
   font-weight: 600;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-medium);
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .btn-hit-me-up:hover {
@@ -594,7 +754,7 @@ input, textarea, select {
   min-height: 48px;
   padding: 0 1.65rem;
   border-radius: var(--radius-full);
-  background: #FFFFFF;
+  background: var(--bg-card);
   border: 1px solid var(--border-medium);
   color: var(--text-primary);
   font-size: 0.88rem;
@@ -610,7 +770,7 @@ input, textarea, select {
 .hero-pill-link:hover {
   border-color: var(--accent-black);
   color: var(--accent-black);
-  background: #FFFFFF;
+  background: var(--bg-card-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -682,7 +842,7 @@ input, textarea, select {
 .hero-social-icon:hover {
   color: var(--text-primary);
   border-color: var(--border-medium);
-  background: #FFFFFF;
+  background: var(--bg-card-hover);
   transform: translateY(-1px);
 }
 
@@ -695,10 +855,10 @@ input, textarea, select {
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--bg-dock);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-dock);
   border-radius: var(--radius-full);
   padding: 0.35rem 0.5rem;
   box-shadow: var(--shadow-dock);
@@ -1335,7 +1495,7 @@ input, textarea, select {
 .icon-action-btn:hover {
   color: var(--text-primary);
   border-color: var(--border-medium);
-  background: #FFFFFF;
+  background: var(--bg-card-hover);
 }
 
 /* Drive Archive Card - Compact & Clean */
@@ -1766,7 +1926,7 @@ input, textarea, select {
 .wa-pill-subtle:hover {
   color: var(--accent-black);
   border-color: var(--accent-black);
-  background: #FFFFFF;
+  background: var(--bg-card-hover);
   transform: translateY(-1px);
 }
 
@@ -1878,7 +2038,7 @@ input, textarea, select {
 .input-field input:focus,
 .input-field textarea:focus {
   outline: none;
-  background: #FFFFFF;
+  background: var(--bg-card);
   border-color: var(--accent-black);
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
@@ -2385,3 +2545,253 @@ input, textarea, select {
     padding: 1.5rem;
   }
 }
+
+/* --------------------------------------------------------------------------
+   16. Dark Theme Component Overrides, Responsive Header & Transitions
+   -------------------------------------------------------------------------- */
+/* Smooth Silk Transition on Theme Toggle */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 0.28s ease, border-color 0.28s ease, color 0.2s ease, fill 0.2s ease !important;
+  transition-delay: 0s !important;
+}
+
+/* Header Dark Styling */
+html[data-theme="dark"] .site-header,
+html.dark .site-header {
+  background: rgba(9, 9, 11, 0.88);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .site-header {
+    background: rgba(9, 9, 11, 0.88);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+}
+
+/* Header Action Buttons in Dark Mode */
+html[data-theme="dark"] .brand-text,
+html.dark .brand-text,
+html[data-theme="dark"] .brand-lab,
+html.dark .brand-lab {
+  color: #F4F4F5;
+}
+
+html[data-theme="dark"] .brand-dot,
+html.dark .brand-dot {
+  color: var(--accent-gold);
+}
+
+html[data-theme="dark"] .header-social-icon,
+html.dark .header-social-icon {
+  color: #A1A1AA;
+}
+
+html[data-theme="dark"] .header-social-icon:hover,
+html.dark .header-social-icon:hover {
+  color: #F4F4F5;
+}
+
+html[data-theme="dark"] .theme-toggle-btn,
+html.dark .theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+html[data-theme="dark"] .theme-toggle-btn:hover,
+html.dark .theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+html[data-theme="dark"] .btn-hit-me-up,
+html.dark .btn-hit-me-up {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #F4F4F5;
+}
+
+html[data-theme="dark"] .btn-hit-me-up:hover,
+html.dark .btn-hit-me-up:hover {
+  background: #F4F4F5;
+  color: #09090B;
+  border-color: #F4F4F5;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+}
+
+/* Floating Dock Dark Styling (Bottom Navigation Button Section) */
+html[data-theme="dark"] .floating-nav-dock,
+html.dark .floating-nav-dock {
+  background: rgba(18, 18, 22, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .floating-nav-dock {
+    background: rgba(18, 18, 22, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+}
+
+html[data-theme="dark"] .dock-link,
+html.dark .dock-link {
+  color: #A1A1AA;
+}
+
+html[data-theme="dark"] .dock-link:hover,
+html.dark .dock-link:hover {
+  color: #FFFFFF;
+}
+
+html[data-theme="dark"] .dock-link.active,
+html.dark .dock-link.active {
+  background: #F4F4F5;
+  color: #09090B;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.22);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .dock-link {
+    color: #A1A1AA;
+  }
+  html:not([data-theme="light"]) .dock-link:hover {
+    color: #FFFFFF;
+  }
+  html:not([data-theme="light"]) .dock-link.active {
+    background: #F4F4F5;
+    color: #09090B;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.22);
+  }
+}
+
+/* Hero CTA Button Section Dark Styling */
+html[data-theme="dark"] .btn-hero-primary,
+html.dark .btn-hero-primary,
+html[data-theme="dark"] .btn-check-work,
+html.dark .btn-check-work {
+  background: #F4F4F5;
+  border-color: #F4F4F5;
+  color: #09090B;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
+}
+
+html[data-theme="dark"] .btn-hero-primary:hover,
+html.dark .btn-hero-primary:hover,
+html[data-theme="dark"] .btn-check-work:hover,
+html.dark .btn-check-work:hover {
+  background: #E4E4E7;
+  border-color: #E4E4E7;
+  color: #09090B;
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+html[data-theme="dark"] .btn-hero-secondary,
+html.dark .btn-hero-secondary,
+html[data-theme="dark"] .btn-download-cv,
+html.dark .btn-download-cv,
+html[data-theme="dark"] .hero-pill-link,
+html.dark .hero-pill-link {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #F4F4F5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .btn-hero-secondary:hover,
+html.dark .btn-hero-secondary:hover,
+html[data-theme="dark"] .btn-download-cv:hover,
+html.dark .btn-download-cv:hover,
+html[data-theme="dark"] .hero-pill-link:hover,
+html.dark .hero-pill-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #FFFFFF;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Other Dark Mode Action Buttons */
+html[data-theme="dark"] .btn-submit-contact:hover,
+html.dark .btn-submit-contact:hover,
+html[data-theme="dark"] .btn-drive-cta:hover,
+html.dark .btn-drive-cta:hover,
+html[data-theme="dark"] .btn-modal-primary:hover,
+html.dark .btn-modal-primary:hover {
+  background: #E4E4E7;
+  border-color: #E4E4E7;
+  color: #09090B;
+}
+
+/* Dark Mode Client Trust Strip */
+html[data-theme="dark"] .clients-label {
+  color: #71717A;
+}
+html[data-theme="dark"] .client-name {
+  color: #A1A1AA;
+}
+html[data-theme="dark"] .client-name:hover {
+  color: #F4F4F5;
+}
+html[data-theme="dark"] .clients-dot {
+  color: #3F3F46;
+}
+
+/* Dark Mode Skills Row Hover */
+html[data-theme="dark"] .skill-editorial-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Dark Mode Form Inputs Focus Shadow */
+html[data-theme="dark"] .input-field input:focus,
+html[data-theme="dark"] .input-field textarea:focus {
+  background: var(--bg-card);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+/* Dark Mode Skeleton Card Shimmer */
+html[data-theme="dark"] .skeleton-card {
+  background: linear-gradient(90deg, #18181B 25%, #27272A 50%, #18181B 75%);
+  background-size: 200% 100%;
+}
+
+/* Dark Mode Scrollbars */
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #27272A;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #3F3F46;
+}
+
+/* Dark Mode Feedback Banners */
+html[data-theme="dark"] .feedback-banner.success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ADE80;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+html[data-theme="dark"] .feedback-banner.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #F87171;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Mobile Header Adjustment */
+@media (max-width: 600px) {
+  .header-inner {
+    padding: 0.85rem 1rem;
+  }
+  .header-actions {
+    gap: 0.5rem;
+  }
+  .theme-toggle-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
