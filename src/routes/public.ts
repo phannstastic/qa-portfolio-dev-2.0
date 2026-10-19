@@ -136,6 +136,37 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
         const db = options?.db || createDbConnection();
 
         try {
+          const techList = await db
+            .select()
+            .from(techStacks)
+            .orderBy(asc(techStacks.sortOrder), asc(techStacks.name));
+
+          if (techList && techList.length > 0) {
+            const standard = techList.filter((s) => !s.isLearning && s.category !== 'Currently Learning');
+            const categoryMap = new Map<string, string[]>();
+
+            for (const s of standard) {
+              const cat = s.category ? s.category.trim() : 'General';
+              if (!categoryMap.has(cat)) categoryMap.set(cat, []);
+              categoryMap.get(cat)!.push(s.name);
+            }
+
+            const categories = Array.from(categoryMap.entries()).map(([category, items]) => ({
+              category,
+              items,
+            }));
+
+            const skills: string[] = techList.map((s) => s.name);
+
+            return {
+              status: 'success',
+              data: {
+                categories,
+                skills,
+              },
+            };
+          }
+
           const projectList = await db
             .select({
               category: projects.category,
