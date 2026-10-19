@@ -1277,6 +1277,133 @@
         }
       });
     }
+
+    // Handlers for dedicated "− Delete Field / Category" modal
+    const deleteCatBtn = document.getElementById('btn-delete-category');
+    const deleteCatForm = document.getElementById('delete-category-form');
+    const deleteCatSelect = document.getElementById('delete-category-select');
+    const deleteCatSubmitBtn = document.getElementById('delete-category-submit-btn');
+    const deleteCatSkillsList = document.getElementById('delete-category-skills-list');
+    const deleteCatCount = document.getElementById('delete-category-count');
+
+    function populateDeleteCategoryModal(preselectedCategory = '') {
+      if (!deleteCatSelect) return;
+
+      // Extract unique categories from cachedTechStacks
+      const categoryMap = new Map();
+      for (const s of cachedTechStacks) {
+        const cat = (s.category || '').trim();
+        if (!cat) continue;
+        if (!categoryMap.has(cat)) {
+          categoryMap.set(cat, []);
+        }
+        categoryMap.get(cat).push(s.name);
+      }
+
+      deleteCatSelect.innerHTML = '<option value="">-- Choose a category to delete --</option>';
+
+      if (categoryMap.size === 0) {
+        deleteCatSelect.innerHTML = '<option value="">No categories found</option>';
+        if (deleteCatSubmitBtn) deleteCatSubmitBtn.disabled = true;
+        if (deleteCatSkillsList) deleteCatSkillsList.textContent = 'There are no categories available to delete.';
+        if (deleteCatCount) deleteCatCount.textContent = '0';
+        return;
+      }
+
+      for (const [catName, skills] of categoryMap.entries()) {
+        const opt = document.createElement('option');
+        opt.value = catName;
+        opt.textContent = `${catName} (${skills.length} skills)`;
+        deleteCatSelect.appendChild(opt);
+      }
+
+      // Check if we should preselect
+      const targetCat = preselectedCategory && categoryMap.has(preselectedCategory)
+        ? preselectedCategory
+        : (currentTechStackFilter && categoryMap.has(currentTechStackFilter) ? currentTechStackFilter : '');
+
+      if (targetCat) {
+        deleteCatSelect.value = targetCat;
+      }
+
+      updateDeleteCategoryPreview();
+    }
+
+    function updateDeleteCategoryPreview() {
+      const selectedCat = deleteCatSelect ? deleteCatSelect.value : '';
+      if (!selectedCat) {
+        if (deleteCatSubmitBtn) deleteCatSubmitBtn.disabled = true;
+        if (deleteCatCount) deleteCatCount.textContent = '0';
+        if (deleteCatSkillsList) deleteCatSkillsList.innerHTML = '<span style="color: var(--admin-text-muted);">Please select a category above to view affected items.</span>';
+        return;
+      }
+
+      const matchingSkills = cachedTechStacks.filter((s) => s.category === selectedCat);
+      if (deleteCatCount) deleteCatCount.textContent = matchingSkills.length;
+      if (deleteCatSubmitBtn) deleteCatSubmitBtn.disabled = false;
+
+      if (deleteCatSkillsList) {
+        if (matchingSkills.length === 0) {
+          deleteCatSkillsList.innerHTML = '<em>No skills found under this category.</em>';
+        } else {
+          deleteCatSkillsList.innerHTML = matchingSkills
+            .map((s) => `<span style="display: inline-block; margin: 2px 4px 2px 0; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.08); font-size: 0.8rem; font-weight: 500;">${escapeHtml(s.name)}</span>`)
+            .join(' ');
+        }
+      }
+    }
+
+    if (deleteCatSelect) {
+      deleteCatSelect.addEventListener('change', updateDeleteCategoryPreview);
+    }
+
+    if (deleteCatBtn) {
+      deleteCatBtn.addEventListener('click', () => {
+        populateDeleteCategoryModal(currentTechStackFilter);
+        openModal('delete-category-modal');
+      });
+    }
+
+    if (deleteCatForm) {
+      deleteCatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const selectedCat = (deleteCatSelect?.value || '').trim();
+        if (!selectedCat) {
+          showToast('Please select a category/field to delete', 'error');
+          return;
+        }
+
+        const count = cachedTechStacks.filter((s) => s.category === selectedCat).length;
+
+        showConfirmDelete(
+          `Delete Field "${selectedCat}"`,
+          `Are you absolutely sure you want to delete the entire "${selectedCat}" field and all of its ${count} skills? This cannot be undone.`,
+          async () => {
+            setLoadingState(deleteCatSubmitBtn, true, 'Deleting Field...');
+            try {
+              const res = await adminFetch(`/api/admin/tech-stacks/category/${encodeURIComponent(selectedCat)}`, {
+                method: 'DELETE',
+              });
+
+              showToast(res.message || `Field "${selectedCat}" deleted successfully!`, 'success');
+              closeModal('delete-category-modal');
+
+              if (currentTechStackFilter === selectedCat) {
+                currentTechStackFilter = '';
+              }
+
+              loadTechStacksData();
+              loadOverviewData();
+            } catch (err) {
+              showToast(err.message || 'Failed to delete field/category', 'error');
+            } finally {
+              setLoadingState(deleteCatSubmitBtn, false, 'Delete Field & All Skills');
+            }
+          }
+        );
+      });
+    }
   }
 
   async function loadTechStacksData() {

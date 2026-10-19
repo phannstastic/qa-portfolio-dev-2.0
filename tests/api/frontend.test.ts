@@ -40,6 +40,10 @@ describe('Public Portfolio Website (Task 7)', () => {
     expect(html).toContain('floating-nav-dock');
     expect(html).toContain('Download CV');
 
+    // Contact section contains phone and WhatsApp
+    expect(html).toContain('081273044163');
+    expect(html).toContain('https://wa.me/6281273044163');
+
     // Ensure old SUT badge is NOT present
     expect(html).not.toContain('hero-pill-badge');
     expect(html).not.toContain('Automation Testing &bull; QA Portfolio SUT');

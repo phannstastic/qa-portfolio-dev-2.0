@@ -270,6 +270,10 @@
                 <button id="btn-create-category" class="btn btn-secondary btn-sm" title="Add a completely new category/field with multiple skills">
                   + Add Field / Category
                 </button>
+                <button id="btn-delete-category" class="btn btn-secondary btn-sm" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);" title="Delete an entire field/category and all its skills">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: -1px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  − Delete Field / Category
+                </button>
                 <button id="btn-create-tech-stack" class="btn btn-primary btn-sm">
                   + Add Tech Stack
                 </button>
@@ -646,6 +650,49 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
           <button type="submit" id="category-save-btn" class="btn btn-primary">Create Field &amp; Skills</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Category / Field Modal -->
+  <div id="delete-category-modal" class="modal-backdrop">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #ef4444; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          Delete Field / Category
+        </h3>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form id="delete-category-form" novalidate>
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--admin-text-muted); margin-bottom: 1.25rem; line-height: 1.5;">
+            Select a competency field / category to remove. <strong>Warning:</strong> Deleting a field will also permanently delete all tech stack skills assigned to that category.
+          </p>
+
+          <div class="form-group">
+            <label for="delete-category-select" class="form-label">Select Field / Category <span class="req">*</span></label>
+            <select id="delete-category-select" class="form-input" required>
+              <option value="">-- Choose a category --</option>
+            </select>
+          </div>
+
+          <div id="delete-category-preview-box" style="margin-top: 1rem; padding: 0.85rem 1rem; border-radius: 8px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #f87171; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Skills that will be removed (<span id="delete-category-count">0</span>):
+            </div>
+            <div id="delete-category-skills-list" style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.5;">
+              Select a category to view skills.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" id="delete-category-submit-btn" class="btn btn-danger" disabled>
+            Delete Field &amp; All Skills
+          </button>
         </div>
       </form>
     </div>

@@ -82,11 +82,13 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
               title: 'Quality Assurance Enthusiast',
               bio: 'Informatics graduate experienced in manual functional testing, UAT support, and test automation. Passionate about ensuring seamless software quality from end to end.',
               email: 'rphannfvs@gmail.com',
+              phone: '+62 812-7304-4163',
               location: 'Sleman, Yogyakarta, Indonesia',
               socialLinks: {
                 github: 'https://github.com/phannstastic',
                 linkedin: 'https://www.linkedin.com/in/muhirfant/',
                 instagram: 'https://www.instagram.com/irfantrinugroho/',
+                whatsapp: 'https://wa.me/6281273044163',
               },
             },
           };
@@ -113,11 +115,13 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
               title: t.String(),
               bio: t.String(),
               email: t.String(),
+              phone: t.Optional(t.Nullable(t.String())),
               location: t.Nullable(t.String()),
               socialLinks: t.Object({
                 github: t.Nullable(t.String()),
                 linkedin: t.Nullable(t.String()),
                 instagram: t.Optional(t.Nullable(t.String())),
+                whatsapp: t.Optional(t.Nullable(t.String())),
               }),
             }),
           }),

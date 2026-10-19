@@ -1400,6 +1400,56 @@ export const createAdminRoutes = (options?: AdminRouteOptions) => {
           }
         )
 
+        // DELETE /api/admin/tech-stacks/category/:categoryName
+        .delete(
+          '/category/:categoryName',
+          async ({ authUser, authError, params: { categoryName }, set }) => {
+            if (authError || !authUser) {
+              set.status = authError?.status || 401;
+              return { status: 'error', message: authError?.message || 'Unauthorized' };
+            }
+
+            const db = options?.db || createDbConnection();
+            const decodedCategory = decodeURIComponent(categoryName || '').trim();
+
+            if (!decodedCategory) {
+              set.status = 400;
+              return { status: 'error', message: 'Category name is required' };
+            }
+
+            try {
+              const existing = await db
+                .select()
+                .from(techStacks)
+                .where(eq(techStacks.category, decodedCategory));
+
+              if (!existing || existing.length === 0) {
+                set.status = 404;
+                return { status: 'error', message: `Field/Category "${decodedCategory}" not found or already empty` };
+              }
+
+              await db.delete(techStacks).where(eq(techStacks.category, decodedCategory));
+
+              return {
+                status: 'success',
+                message: `Field/Category "${decodedCategory}" and all its ${existing.length} tech stack(s) were deleted successfully`,
+                deletedCount: existing.length,
+              };
+            } catch (err: any) {
+              console.error('❌ Error deleting tech stack category:', err?.message || err);
+              set.status = 500;
+              return { status: 'error', message: 'Failed to delete tech stack category' };
+            }
+          },
+          {
+            detail: {
+              summary: 'Delete Tech Stack Category',
+              tags: ['Admin Tech Stacks'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+
         // DELETE /api/admin/tech-stacks/:id
         .delete(
           '/:id',

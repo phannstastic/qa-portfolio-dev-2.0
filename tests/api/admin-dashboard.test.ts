@@ -56,8 +56,11 @@ describe('Admin Dashboard & Authentication (Task 8)', () => {
       // Modals
       expect(html).toContain('id="project-modal"');
       expect(html).toContain('id="experience-modal"');
+      expect(html).toContain('id="category-modal"');
+      expect(html).toContain('id="delete-category-modal"');
       expect(html).toContain('id="contact-detail-modal"');
       expect(html).toContain('id="confirm-modal"');
+      expect(html).toContain('id="btn-delete-category"');
 
       // Assets
       expect(html).toContain('href="/css/admin.css"');
@@ -328,5 +331,95 @@ describe('Admin Dashboard & Authentication (Task 8)', () => {
       expect(json.data.length).toBe(1);
       expect(json.data[0].title).toBe('Mock Project');
     });
+
+    it('rejects unauthenticated DELETE /api/admin/tech-stacks/category/:categoryName', async () => {
+      const res = await app.handle(
+        new Request('http://localhost/api/admin/tech-stacks/category/QA%20Methodologies', {
+          method: 'DELETE',
+        })
+      );
+      expect(res.status).toBe(401);
+      const json = (await res.json()) as any;
+      expect(json.status).toBe('error');
+    });
+
+    it('deletes all tech stacks in category when authenticated and category exists', async () => {
+      const token = await signAuthToken(
+        { id: 99, email: 'admin@example.com', role: 'admin' },
+        testJwtSecret
+      );
+
+      let deletedCategory = '';
+
+      const mockDb = {
+        select: () => ({
+          from: () => ({
+            where: () => {
+              const items = [
+                { id: 1, name: 'Cypress', category: 'Automation Tools' },
+                { id: 2, name: 'Playwright', category: 'Automation Tools' },
+              ];
+              return Object.assign(Promise.resolve(items), {
+                limit: async () => [{ id: 99, name: 'Admin User', email: 'admin@example.com', role: 'admin' }],
+              });
+            },
+          }),
+        }),
+        delete: () => ({
+          where: async () => {
+            deletedCategory = 'Automation Tools';
+            return [{ affectedRows: 2 }];
+          },
+        }),
+      };
+
+      const authedApp = createServer({ db: mockDb as any, jwtSecret: testJwtSecret });
+      const res = await authedApp.handle(
+        new Request('http://localhost/api/admin/tech-stacks/category/Automation%20Tools', {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      );
+
+      expect(res.status).toBe(200);
+      const json = (await res.json()) as any;
+      expect(json.status).toBe('success');
+      expect(json.deletedCount).toBe(2);
+      expect(json.message).toContain('Automation Tools');
+      expect(deletedCategory).toBe('Automation Tools');
+    });
+
+    it('returns 404 when attempting to delete non-existent category', async () => {
+      const token = await signAuthToken(
+        { id: 99, email: 'admin@example.com', role: 'admin' },
+        testJwtSecret
+      );
+
+      const mockDb = {
+        select: () => ({
+          from: () => ({
+            where: () => {
+              return Object.assign(Promise.resolve([]), {
+                limit: async () => [{ id: 99, name: 'Admin User', email: 'admin@example.com', role: 'admin' }],
+              });
+            },
+          }),
+        }),
+      };
+
+      const authedApp = createServer({ db: mockDb as any, jwtSecret: testJwtSecret });
+      const res = await authedApp.handle(
+        new Request('http://localhost/api/admin/tech-stacks/category/NonExistentCategory', {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      );
+
+      expect(res.status).toBe(404);
+      const json = (await res.json()) as any;
+      expect(json.status).toBe('error');
+      expect(json.message).toContain('not found');
+    });
   });
 });
+
