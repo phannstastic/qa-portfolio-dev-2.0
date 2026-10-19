@@ -22,6 +22,8 @@ export function getDbConfig(env: Record<string, string | undefined> = process.en
     database: env.DB_NAME || 'qa_portfolio_dev',
     waitForConnections: true,
     connectionLimit,
+    maxIdle: 1,
+    idleTimeout: 10000,
     queueLimit: 0,
     enableKeepAlive: true,
     keepAliveInitialDelay: 10000,

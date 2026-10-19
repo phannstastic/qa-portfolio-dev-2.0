@@ -19,7 +19,7 @@ services:
       - key: DB_NAME
         sync: false
       - key: DB_CONNECTION_LIMIT
-        value: "4"
+        value: "2"
       - key: JWT_SECRET
         generateValue: true
       - key: ADMIN_EMAIL

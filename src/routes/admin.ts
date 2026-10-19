@@ -20,6 +20,9 @@ export function generateSlug(text: string): string {
  * Factory for Admin CMS routes.
  * Protected by JWT authentication and trusted role verification.
  */
+// In-memory cache for authorized admin users (reduces DB hits and prevents connection exhaustion)
+const authUserCache = new Map<number, { user: any; expiresAt: number }>();
+
 export const createAdminRoutes = (options?: AdminRouteOptions) => {
   return new Elysia({ prefix: '/api/admin' })
     .onError(({ code, error, set }) => {
@@ -61,6 +64,26 @@ export const createAdminRoutes = (options?: AdminRouteOptions) => {
         };
       }
 
+      // Check cache first to avoid slamming the database on simultaneous requests
+      if (!options?.db) {
+        const cached = authUserCache.get(payload.id);
+        if (cached && Date.now() < cached.expiresAt) {
+          if (cached.user.role !== 'admin' && cached.user.role !== 'superadmin') {
+            return {
+              authUser: null,
+              authError: {
+                status: 403,
+                message: 'Forbidden: Insufficient privileges',
+              },
+            };
+          }
+          return {
+            authUser: cached.user,
+            authError: null,
+          };
+        }
+      }
+
       // Query trusted user record from database
       const db = options?.db || createDbConnection();
       try {
@@ -96,6 +119,13 @@ export const createAdminRoutes = (options?: AdminRouteOptions) => {
               message: 'Forbidden: Insufficient privileges',
             },
           };
+        }
+
+        if (!options?.db) {
+          authUserCache.set(payload.id, {
+            user: dbUser,
+            expiresAt: Date.now() + 30000, // 30s cache TTL
+          });
         }
 
         return {
