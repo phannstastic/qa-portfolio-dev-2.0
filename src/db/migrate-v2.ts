@@ -12,10 +12,15 @@ export async function runMigrationV2() {
     port: Number(process.env.DB_PORT) || 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
+    database: dbName,
   });
 
-  // Ensure DB exists
-  await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
+  // Try creating DB if user has global privileges (ignored if already exists or access restricted)
+  try {
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
+  } catch (_e) {
+    // Database already exists on managed cloud hosts (like Silly Development)
+  }
   await connection.query(`USE \`${dbName}\`;`);
 
   // Users
@@ -74,6 +79,11 @@ export async function runMigrationV2() {
       PRIMARY KEY (id)
     );
   `);
+
+  // Ensure certificate columns exist if table was previously created without them
+  try { await connection.query(`ALTER TABLE experiences ADD COLUMN certificate_url varchar(255);`); } catch (_e) {}
+  try { await connection.query(`ALTER TABLE experiences ADD COLUMN certificate_type varchar(50);`); } catch (_e) {}
+  try { await connection.query(`ALTER TABLE experiences ADD COLUMN certificate_name varchar(255);`); } catch (_e) {}
 
   // Contacts
   await connection.query(`
