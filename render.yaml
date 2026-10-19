@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: qa-portfolio-2-0
+    runtime: bun
+    plan: free
+    buildCommand: bun install && bun run build
+    startCommand: bun run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_CONNECTION_LIMIT
+        value: "4"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@qa-portfolio.local
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CONTACT_TO_EMAIL
+        value: rphannfvs@gmail.com
+      - key: CONTACT_FROM_EMAIL
+        value: irfan.Lab <onboarding@resend.dev>
