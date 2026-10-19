@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Admin CMS Dashboard for irfanLab QA Engineering">
+  <meta name="description" content="Admin CMS Dashboard for irfanLab QA Portfolio">
   <title>Admin Dashboard &bull; irfan.Lab</title>
 
   <!-- Favicons -->
@@ -29,7 +29,7 @@
   <aside id="admin-sidebar" class="admin-sidebar">
     <div class="sidebar-header">
       <a href="/admin" class="brand-logo" aria-label="irfanLab Admin Dashboard">
-        <span>irfan<span style="font-weight: 800;">Lab</span><span style="color: #F59E0B; font-weight: 900;">.</span></span>
+        <span>irfan<span style="font-weight: 800;">Lab</span><span class="brand-dot">.</span></span>
         <span class="brand-badge">CMS</span>
       </a>
     </div>
@@ -45,7 +45,7 @@
       </a>
       <a href="#experiences" class="sidebar-link" data-view="experiences" id="nav-experiences">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-        <span>Experiences</span>
+        <span>Work Experience</span>
       </a>
       <a href="#tech-stacks" class="sidebar-link" data-view="tech-stacks" id="nav-tech-stacks">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
@@ -218,7 +218,7 @@
       <section id="view-experiences" class="admin-view">
         <div class="table-card">
           <div class="table-header-row">
-            <h2 class="table-title">Career Experiences</h2>
+            <h2 class="table-title">Work Experience</h2>
             <div class="table-actions">
               <button id="btn-create-experience" class="btn btn-primary btn-sm">
                 + Add Experience
@@ -260,11 +260,11 @@
             <div class="table-actions">
               <div class="filter-btn-group" id="tech-stack-filter-group">
                 <button class="filter-btn active" data-ts-category="">All</button>
-                <button class="filter-btn" data-ts-category="QA & Testing Methodologies">QA Methodologies</button>
-                <button class="filter-btn" data-ts-category="Automation & Testing Tools">Automation Tools</button>
+                <button class="filter-btn" data-ts-category="Core Manual QA & Methodologies">Core QA</button>
+                <button class="filter-btn" data-ts-category="API & Automation Tools (Foundational)">API &amp; Automation</button>
                 <button class="filter-btn" data-ts-category="Web & Database Technologies">Web &amp; Database</button>
                 <button class="filter-btn" data-ts-category="Tools & Project Collaboration">Project Tools</button>
-                <button class="filter-btn" data-ts-category="Certifications & Focus">Certifications / Focus</button>
+                <button class="filter-btn" data-ts-category="Certifications & Training">Certifications &amp; Training</button>
               </div>
               <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
                 <button id="btn-create-category" class="btn btn-secondary btn-sm" title="Add a completely new category/field with multiple skills">
@@ -410,6 +410,7 @@
           <div class="form-group">
             <label for="project-description" class="form-label">Description <span class="req">*</span></label>
             <textarea id="project-description" class="form-textarea" required placeholder="Detailed project overview, problem statement, testing methodology, and impact..."></textarea>
+            <div class="form-help">Tip: The first sentence serves as the project overview. Subsequent sentences are automatically rendered as Key QA Activities bullet points in the project detail modal.</div>
           </div>
 
           <div class="form-row">
@@ -495,45 +496,7 @@
 
           <div class="form-group">
             <label for="exp-description" class="form-label">Responsibilities & Achievements <span class="req">*</span></label>
-            <textarea id="exp-description" class="form-textarea" required placeholder="Key responsibilities, automation achievements, test framework design, defect reduction stats..."></textarea>
-          </div>
-
-          <!-- Certificate Attachment -->
-          <div style="border-top: 1px solid var(--border-color, rgba(255,255,255,0.08)); padding-top: 1.25rem; margin-top: 1.25rem;">
-            <div style="margin-bottom: 0.75rem; display: flex; align-items: baseline; justify-content: space-between;">
-              <span style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem;">Certificate / Proof of Experience</span>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">PDF or Images (.png, .jpg, .webp)</span>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group" style="flex: 1.5;">
-                <label for="exp-cert-name" class="form-label">Certificate Title</label>
-                <input type="text" id="exp-cert-name" class="form-input" maxlength="200" placeholder="e.g. Sertifikat Magang QA Engineer">
-              </div>
-              <div class="form-group" style="flex: 1;">
-                <label for="exp-cert-type" class="form-label">Format Type</label>
-                <select id="exp-cert-type" class="form-input">
-                  <option value="pdf">PDF Document</option>
-                  <option value="image">Image (.png, .jpg, .webp)</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="exp-cert-url" class="form-label">Certificate URL or File Path</label>
-              <input type="text" id="exp-cert-url" class="form-input" maxlength="500" placeholder="/docs/certificates/sertifikat-magang.pdf or https://...">
-            </div>
-
-            <div class="form-group" style="margin-bottom: 0.25rem;">
-              <label class="form-label">Upload Certificate File (PDF / Image)</label>
-              <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <input type="file" id="exp-cert-file" accept=".pdf,image/png,image/jpeg,image/webp" class="form-input" style="padding: 0.45rem;">
-                <button type="button" id="btn-upload-cert" class="btn btn-secondary btn-sm" style="white-space: nowrap;">
-                  Upload
-                </button>
-              </div>
-              <div id="cert-upload-status" class="form-help" style="margin-top: 0.4rem;"></div>
-            </div>
+            <textarea id="exp-description" class="form-textarea" required placeholder="Key manual QA testing, UAT/FAT validation, test scenario design, defect tracking, and achievements..."></textarea>
           </div>
         </div>
         <div class="modal-footer">
@@ -566,8 +529,8 @@
                 💡 Tip: Type ANY new category name (e.g. <em>Web Development</em>) to automatically create a new field/row on your website, or pick an existing one.
               </div>
               <datalist id="tech-category-suggestions">
-                <option value="QA & Testing Methodologies">
-                <option value="Automation & Testing Tools">
+                <option value="Core Manual QA & Methodologies">
+                <option value="API & Automation Tools (Foundational)">
                 <option value="Web & Database Technologies">
                 <option value="Tools & Project Collaboration">
                 <option value="Certifications & Training">

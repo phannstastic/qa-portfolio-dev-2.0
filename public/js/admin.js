@@ -435,7 +435,7 @@
       const titles = {
         overview: 'Dashboard Overview',
         projects: 'Projects Management',
-        experiences: 'Experiences Management',
+        experiences: 'Work Experience',
         'tech-stacks': 'Tech Stacks & Skills Library',
         contacts: 'Contact Inquiries',
       };
@@ -828,56 +828,6 @@
     const endDateGroup = document.getElementById('exp-end-date-group');
     const saveBtn = document.getElementById('experience-save-btn');
 
-    const uploadCertBtn = document.getElementById('btn-upload-cert');
-    const certFileInput = document.getElementById('exp-cert-file');
-    const certStatus = document.getElementById('cert-upload-status');
-
-    if (uploadCertBtn && certFileInput) {
-      uploadCertBtn.addEventListener('click', async () => {
-        const file = certFileInput.files && certFileInput.files[0];
-        if (!file) {
-          showToast('Please select a certificate file first (PDF or image)', 'error');
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        uploadCertBtn.disabled = true;
-        uploadCertBtn.textContent = 'Uploading...';
-        if (certStatus) certStatus.innerHTML = '<span style="color: var(--accent-cyan);">Uploading file...</span>';
-
-        try {
-          const res = await adminFetch('/api/admin/upload/certificate', {
-            method: 'POST',
-            body: formData,
-          });
-
-          if (res?.data?.url) {
-            document.getElementById('exp-cert-url').value = res.data.url;
-            document.getElementById('exp-cert-type').value = res.data.type || 'pdf';
-            const nameInput = document.getElementById('exp-cert-name');
-            if (nameInput && !nameInput.value.trim()) {
-              const comp = document.getElementById('exp-company').value.trim();
-              nameInput.value = comp ? `Sertifikat Magang - ${comp}` : file.name;
-            }
-            if (certStatus) {
-              certStatus.innerHTML = `<span style="color: var(--accent-emerald, #10b981);">Uploaded: <strong>${escapeHtml(res.data.url)}</strong></span>`;
-            }
-            showToast('Certificate uploaded successfully!', 'success');
-          }
-        } catch (err) {
-          if (certStatus) {
-            certStatus.innerHTML = `<span style="color: var(--accent-rose, #ef4444);">${escapeHtml(err.message || 'Upload failed')}</span>`;
-          }
-          showToast(err.message || 'Failed to upload certificate', 'error');
-        } finally {
-          uploadCertBtn.disabled = false;
-          uploadCertBtn.textContent = 'Upload';
-        }
-      });
-    }
-
     if (isCurrentCheckbox && endDateGroup) {
       isCurrentCheckbox.addEventListener('change', () => {
         if (isCurrentCheckbox.checked) {
@@ -910,9 +860,6 @@
         const endDate = isCurrent ? null : document.getElementById('exp-end-date').value || null;
         const description = document.getElementById('exp-description').value.trim();
         const sortOrder = parseInt(document.getElementById('exp-sort-order').value, 10) || 0;
-        const certificateUrl = document.getElementById('exp-cert-url').value.trim() || null;
-        const certificateType = document.getElementById('exp-cert-type').value || null;
-        const certificateName = document.getElementById('exp-cert-name').value.trim() || null;
 
         // Validation
         if (!company || !role || !startDate || !description) {
@@ -935,9 +882,9 @@
           isCurrent,
           description,
           sortOrder,
-          certificateUrl,
-          certificateType,
-          certificateName,
+          certificateUrl: null,
+          certificateType: null,
+          certificateName: null,
         };
 
         setLoadingState(saveBtn, true, 'Saving...');
@@ -983,14 +930,6 @@
     document.getElementById('exp-is-current').checked = false;
     document.getElementById('exp-description').value = '';
     document.getElementById('exp-sort-order').value = '0';
-    document.getElementById('exp-cert-name').value = '';
-    document.getElementById('exp-cert-url').value = '';
-    document.getElementById('exp-cert-type').value = 'pdf';
-
-    const certFile = document.getElementById('exp-cert-file');
-    if (certFile) certFile.value = '';
-    const certStatus = document.getElementById('cert-upload-status');
-    if (certStatus) certStatus.textContent = '';
 
     const endDateGroup = document.getElementById('exp-end-date-group');
     if (endDateGroup) endDateGroup.style.opacity = '1';
@@ -1014,20 +953,6 @@
     document.getElementById('exp-is-current').checked = Boolean(exp.isCurrent);
     document.getElementById('exp-description').value = exp.description || '';
     document.getElementById('exp-sort-order').value = exp.sortOrder ?? 0;
-    document.getElementById('exp-cert-name').value = exp.certificateName || '';
-    document.getElementById('exp-cert-url').value = exp.certificateUrl || '';
-    document.getElementById('exp-cert-type').value = exp.certificateType || 'pdf';
-
-    const certFile = document.getElementById('exp-cert-file');
-    if (certFile) certFile.value = '';
-    const certStatus = document.getElementById('cert-upload-status');
-    if (certStatus) {
-      if (exp.certificateUrl) {
-        certStatus.innerHTML = `<span style="color: var(--text-muted); font-size: 0.8rem;">Current: <a href="${escapeHtml(exp.certificateUrl)}" target="_blank" style="color: var(--accent-cyan); text-decoration: underline;">${escapeHtml(exp.certificateName || exp.certificateUrl)}</a></span>`;
-      } else {
-        certStatus.textContent = '';
-      }
-    }
 
     const endDateGroup = document.getElementById('exp-end-date-group');
     if (endDateGroup) {
@@ -1096,22 +1021,12 @@
 
           const periodText = `${formatDate(e.startDate)} &mdash; ${e.isCurrent ? 'Present' : formatDate(e.endDate)}`;
 
-          const certBadge = e.certificateUrl
-            ? `<div style="margin-top: 0.35rem;">
-                <a href="${escapeHtml(e.certificateUrl)}" target="_blank" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 999px; background: rgba(14, 165, 233, 0.12); color: var(--accent-cyan); text-decoration: none; font-weight: 600;">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                  ${escapeHtml(e.certificateName || (e.certificateType === 'image' ? 'Image Certificate' : 'PDF Certificate'))}
-                </a>
-              </div>`
-            : '';
-
           return `
             <tr>
               <td><strong>${escapeHtml(e.sortOrder)}</strong></td>
               <td>
                 <div style="font-weight: 700; color: var(--text-primary);">${escapeHtml(e.company)}</div>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(e.location || 'Remote / Unspecified')}</div>
-                ${certBadge}
               </td>
               <td><span style="font-weight: 600; color: var(--accent-cyan); font-size: 0.9rem;">${escapeHtml(e.role)}</span></td>
               <td style="font-size: 0.85rem; color: var(--text-secondary);">${periodText}</td>
@@ -1479,7 +1394,7 @@
     let filtered = cachedTechStacks;
     if (currentTechStackFilter) {
       if (currentTechStackFilter === 'Currently Learning' || currentTechStackFilter === 'Learning (Future)') {
-        filtered = cachedTechStacks.filter((s) => s.isLearning || s.category === 'Currently Learning' || s.category === 'Certifications & Focus');
+        filtered = cachedTechStacks.filter((s) => s.isLearning || s.category === 'Currently Learning' || s.category === 'Certifications & Training');
       } else {
         filtered = cachedTechStacks.filter((s) => 
           s.category === currentTechStackFilter ||

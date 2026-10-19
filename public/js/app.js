@@ -36,8 +36,8 @@ const state = {
 // =============================================================================
 const FALLBACK_PROFILE = {
   name: 'Muhammad Irfan Trinugroho',
-  title: 'Quality Assurance Enthusiast',
-  bio: 'Informatics graduate experienced in manual functional testing, UAT support, and test automation. Passionate about ensuring seamless software quality from end to end.',
+  title: 'Software Quality Assurance Tester',
+  bio: 'Informatics graduate specializing in manual functional testing, structured test case design, and UAT/FAT validation—supported by foundational API and UI test automation.',
   email: 'rphannfvs@gmail.com',
   phone: '+62 812-7304-4163',
   location: 'Sleman, Yogyakarta, Indonesia',
@@ -74,11 +74,11 @@ const FALLBACK_EXPERIENCES = [
     endDate: '2026-05-29',
     isCurrent: false,
     description:
-      'Participated in Vortex Career Catalyst Batch 4 (SK: 032/SK/VRT/V/2026). Analyzed functional requirement specifications to craft comprehensive test cases and user scenarios. Performed manual functional testing across core user flows, logged and tracked defects, conducted regression testing after bug fixes, and evaluated UI/UX responsiveness and baseline performance.',
+      'Participated in Vortex Career Catalyst Batch 4. Analyzed functional requirement specifications to craft comprehensive test cases and user scenarios. Performed manual functional testing across core user flows, logged and tracked defects, conducted regression testing after bug fixes, and evaluated UI/UX responsiveness and baseline performance.',
     sortOrder: 2,
-    certificateUrl: '/docs/certificates/sertifikat-magang-vortex-buana-edumedia.pdf',
-    certificateType: 'pdf',
-    certificateName: 'Sertifikat Magang QA & SK (Batch 4) - PT Vortex Buana Edumedia',
+    certificateUrl: null,
+    certificateType: null,
+    certificateName: null,
   },
   {
     id: 3,
@@ -91,21 +91,21 @@ const FALLBACK_EXPERIENCES = [
     description:
       'Completed Software Quality Assurance On The Job Training under System Engineering mentor Aria Rahman (Certificate: P43725/LEN/OJT/UH-3/I/2026, Final Score: 91.67 / Grade A - Sangat Baik). Designed structured test scenarios, executed functional & manual regression testing, documented defects, and actively supported Factory Acceptance Testing (FAT) procedures.',
     sortOrder: 3,
-    certificateUrl: '/docs/certificates/sertifikat-magang-len-industri.pdf',
-    certificateType: 'pdf',
-    certificateName: 'Sertifikat SQA OJT Grade A (91.67) - PT Len Industri (Persero)',
+    certificateUrl: null,
+    certificateType: null,
+    certificateName: null,
   },
 ];
 
 const FALLBACK_PROJECTS = [
   {
     id: 1,
-    title: 'Pondok Makan Kang Naryo - Web Development & Katalon UI Testing',
+    title: 'Pondok Makan Kang Naryo – Functional QA & Katalon UI Testing',
     slug: 'pondok-makan-kang-naryo',
     description:
-      'Web application and automated UI testing suite for a food ordering platform. Developed backend business logic and RESTful services with Laravel & MySQL, and engineered end-to-end automated UI test cases for user authentication, checkout workflows, and admin menu management using Katalon Studio. Documented comprehensive test cases and defect tracking in Test Case Pondok Makan.',
-    category: 'Automation Testing',
-    techStack: 'Katalon Studio, Laravel, PHP, MySQL, Automated UI Testing, Manual Testing, Defect Tracking',
+      'Web application and QA testing suite for a food ordering platform. Designed comprehensive manual test scenarios and functional test cases for user authentication, checkout workflows, and admin menu management, complemented by foundational automated UI regression scripts using Katalon Studio and structured defect tracking.',
+    category: 'Manual & UI Testing',
+    techStack: 'Manual Testing, Test Case Design, Defect Tracking, Katalon Studio (Basic), Laravel, MySQL',
     githubUrl: 'https://github.com/phannstastic/pondok-makan-kang-naryo-ui-testing.git',
     liveDemoUrl: 'https://github.com/phannstastic/Pondok-Makan-Kang-Naryo.git',
     imageUrl: '/images/projects/kang-naryo-katalon.svg',
@@ -114,26 +114,26 @@ const FALLBACK_PROJECTS = [
   },
   {
     id: 2,
-    title: 'XYZ Bank - Cypress E2E Automation Framework',
-    slug: 'xyz-bank-cypress-test',
+    title: 'Loafy Bakery - E-Commerce System & Manual QA Testing',
+    slug: 'loafy-bakery-manual-testing',
     description:
-      'End-to-End automated testing framework for XYZ Bank web application utilizing Cypress with Page Object Model (POM) architecture. Automated 14 comprehensive test scenarios covering Manager workflows (TC-01-MAN to TC-06-MAN: manager login, valid/invalid customer addition, currency account opening, customer deletion) and Customer workflows (TC-01-CUS to TC-08-CUS: customer login, account deposits, balance validation, insufficient fund withdrawals, transaction history verification, and session logout).',
-    category: 'Automation Testing',
-    techStack: 'Cypress, JavaScript, Page Object Model (POM), E2E Testing, Mocha, Chai, Test Automation',
-    githubUrl: 'https://github.com/phannstastic/xyz-Bank-Cypress-Test.git',
+      'Web-based bakery ordering platform featuring custom backend order processing, catalog browsing, shopping cart workflows, and MySQL relational database. Executed rigorous manual exploratory and functional testing across user checkout flows, inventory tracking, role-based admin order updates, and edge-case form validation. Documented test scenarios, edge cases, and defect reports.',
+    category: 'Manual Testing',
+    techStack: 'Manual Testing, Exploratory Testing, Functional Testing, Test Scenarios, Defect Reporting, PHP, MySQL',
+    githubUrl: 'https://github.com/phannstastic/Loafy-Bakery.git',
     liveDemoUrl: null,
-    imageUrl: '/images/projects/xyz-bank-cypress.svg',
+    imageUrl: '/images/projects/loafy-bakery.svg',
     isFeatured: true,
     sortOrder: 2,
   },
   {
     id: 3,
-    title: 'Swagger Petstore V2 - REST API Automation with Postman',
+    title: 'Swagger Petstore V2 - REST API Testing with Postman',
     slug: 'petstore-v2-swagger-api-testing',
     description:
-      'Comprehensive REST API testing suite for the public Swagger Petstore v2 (/pet) service. Formulated automated assertions validating HTTP response status codes (200, 400, 404), response payloads, JSON schemas, and negative boundary scenarios for findByStatus, pet retrieval by ID, pet creation, updates, and deletion. Automated batch execution via Postman Collection Runner and documented defects including weak API input validation behavior.',
+      'Comprehensive REST API testing suite for the public Swagger Petstore v2 (/pet) service. Formulated positive and negative test cases validating HTTP response status codes (200, 400, 404), response payloads, JSON schemas, and boundary scenarios for pet CRUD endpoints using Postman Collection Runner and documented API validation defects.',
     category: 'API Testing',
-    techStack: 'Postman, Collection Runner, REST API, JSON Schema Validation, API Automation, Regression Testing',
+    techStack: 'Postman, REST API Testing, Negative & Boundary Testing, JSON Schema Validation, Collection Runner',
     githubUrl: 'https://github.com/phannstastic/Petstore-Swagger-V2.git',
     liveDemoUrl: 'https://github.com/phannstastic/Petstore-Swagger-V2-Part-2.git',
     imageUrl: '/images/projects/petstore-test-result.png',
@@ -142,12 +142,12 @@ const FALLBACK_PROJECTS = [
   },
   {
     id: 4,
-    title: 'OrangeHRM - UI Test Automation with Katalon Studio',
+    title: 'OrangeHRM - Authentication Test Scenarios & Katalon Studio',
     slug: 'orangehrm-katalon-automation',
     description:
-      'Automated UI regression suite for OrangeHRM authentication module using Katalon Studio and Katalon Recorder. Implemented test cases verifying valid credential authorization, invalid username/password combinations, empty input validations, dynamic web locators, and error banner assertions. Documented defect lifecycle and test execution matrices.',
-    category: 'Automation Testing',
-    techStack: 'Katalon Studio, Katalon Recorder, Web UI Testing, Test Automation, Regression Testing, Defect Lifecycle',
+      'Functional regression suite for OrangeHRM authentication module. Designed positive and negative test cases verifying valid credential authorization, invalid username/password combinations, empty input validations, and error banner assertions, executed via manual test matrices and basic Katalon Studio playback.',
+    category: 'Functional & UI Testing',
+    techStack: 'Functional Testing, Negative Testing, Defect Lifecycle, Katalon Studio (Basic), Katalon Recorder',
     githubUrl: 'https://github.com/phannstastic/OrangeHRM-Login.git',
     liveDemoUrl: null,
     imageUrl: '/images/projects/orangehrm-katalon.svg',
@@ -156,15 +156,15 @@ const FALLBACK_PROJECTS = [
   },
   {
     id: 5,
-    title: 'Loafy Bakery - E-Commerce System & Manual QA Testing',
-    slug: 'loafy-bakery-manual-testing',
+    title: 'XYZ Bank - E2E Test Scenarios & Foundational Cypress Suite',
+    slug: 'xyz-bank-cypress-test',
     description:
-      'Web-based bakery ordering platform featuring custom backend order processing, catalog browsing, shopping cart workflows, and MySQL relational database. Executed rigorous manual exploratory and functional testing across user checkout flows, inventory tracking, role-based admin order updates, and edge-case form validation. Documented test scenarios, edge cases, and defect reports.',
-    category: 'Manual Testing',
-    techStack: 'PHP, MySQL, Manual Testing, Exploratory Testing, Functional Testing, Test Scenarios, Defect Reporting',
-    githubUrl: 'https://github.com/phannstastic/Loafy-Bakery.git',
+      'End-to-End test suite for XYZ Bank web application covering 14 structured test scenarios across Manager workflows (TC-01-MAN to TC-06-MAN: login, valid/invalid customer creation, account opening, deletion) and Customer workflows (TC-01-CUS to TC-08-CUS: login, deposits, balance validation, insufficient funds, and transaction history) explored with Cypress.',
+    category: 'E2E & Scenario Testing',
+    techStack: 'Test Scenario Design, E2E Testing, Boundary Value Testing, Cypress (Basic), JavaScript',
+    githubUrl: 'https://github.com/phannstastic/xyz-Bank-Cypress-Test.git',
     liveDemoUrl: null,
-    imageUrl: '/images/projects/loafy-bakery.svg',
+    imageUrl: '/images/projects/xyz-bank-cypress.svg',
     isFeatured: false,
     sortOrder: 5,
   },
@@ -172,25 +172,26 @@ const FALLBACK_PROJECTS = [
 
 const FALLBACK_SKILLS_CATEGORIES = [
   {
-    category: 'QA & Testing Methodologies',
+    category: 'Core Manual QA & Methodologies',
     items: [
       'Manual Testing',
       'Functional Testing',
       'Regression Testing',
+      'Exploratory Testing',
       'UAT (User Acceptance Testing)',
+      'Factory Acceptance Testing (FAT)',
       'Test Case & Scenario Design',
       'Defect Tracking & Bug Reporting',
-      'Factory Acceptance Testing (FAT)',
     ],
   },
   {
-    category: 'Automation & Testing Tools',
+    category: 'API & Automation Tools (Foundational)',
     items: [
-      'Cypress (E2E Testing)',
-      'Katalon Studio',
       'Postman (API Testing)',
-      'Swagger / OpenAPI',
+      'Katalon Studio (Basic)',
       'Katalon Recorder',
+      'Cypress (Basic Exposure)',
+      'Swagger / OpenAPI',
     ],
   },
   {
@@ -207,21 +208,21 @@ const FALLBACK_SKILLS_CATEGORIES = [
   {
     category: 'Tools & Project Collaboration',
     items: [
-      'Git & GitHub',
       'ClickUp',
       'Odoo ERP',
-      'VS Code',
       'Google Sheets & MS Excel',
+      'Git & GitHub',
+      'VS Code',
     ],
   },
   {
     category: 'Certifications & Training',
     items: [
       'Sanbercode QA Bootcamp (2025)',
-      'Test Automation University (2025)',
       'MySkill QA Certification (2025)',
-      'Page Object Model (POM)',
-      'API Test Automation',
+      'Test Automation University (2025)',
+      'SQA OJT Grade A - PT Len Industri',
+      'QA Internship - PT Vortex Buana Edumedia',
     ],
   },
 ];
@@ -411,6 +412,20 @@ async function loadProfile() {
 // =============================================================================
 // 4. SECTION 2: EXPERIENCES (GET /api/experiences with fallback)
 // =============================================================================
+function formatExperienceDate(dateStr) {
+  if (!dateStr) return '';
+  const parts = String(dateStr).trim().split('-');
+  if (parts.length >= 2) {
+    const year = parts[0];
+    const monthIdx = parseInt(parts[1], 10) - 1;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    if (monthIdx >= 0 && monthIdx < 12) {
+      return `${months[monthIdx]} ${year}`;
+    }
+  }
+  return dateStr;
+}
+
 async function loadExperiences() {
   const container = document.getElementById('experiences-container');
   if (!container) return;
@@ -432,49 +447,30 @@ async function loadExperiences() {
 
   let html = '';
   for (const exp of experiences) {
-    const period = exp.isCurrent
-      ? `${escapeHtml(exp.startDate)} &mdash; Present`
-      : `${escapeHtml(exp.startDate)} &mdash; ${escapeHtml(exp.endDate || 'Completed')}`;
+    const startFormatted = formatExperienceDate(exp.startDate);
+    const endFormatted = exp.isCurrent ? 'Present' : (formatExperienceDate(exp.endDate) || 'Completed');
+    const periodText = `${startFormatted} &mdash; ${endFormatted}`;
+
+    const cleanLocation = (exp.location || '').replace(', West Java', '').trim();
+    const cleanDesc = (exp.description || '').replace(/\s*\(SK:[^)]+\)/gi, '').trim();
 
     html += `
-      <article class="exp-card">
-        <div class="exp-header">
-          <div>
+      <article class="exp-item-editorial exp-card">
+        <div class="exp-left-col">
+          <div class="exp-period-clean">
+            ${exp.isCurrent ? '<span class="exp-pulse-dot" aria-label="Active Role"></span>' : ''}
+            <span class="exp-date-text">${periodText}</span>
+          </div>
+          ${cleanLocation ? `<p class="exp-location-clean">${escapeHtml(cleanLocation)}</p>` : ''}
+        </div>
+
+        <div class="exp-right-col">
+          <div class="exp-title-block">
             <h3 class="exp-role-title">${escapeHtml(exp.role)}</h3>
             <p class="exp-company-name">${escapeHtml(exp.company)}</p>
           </div>
-          <div class="exp-meta-badges">
-            <span class="exp-date-pill">${period}</span>
-            ${exp.isCurrent ? '<span class="exp-current-badge">Active</span>' : ''}
-          </div>
+          <p class="exp-description">${escapeHtml(cleanDesc)}</p>
         </div>
-        ${exp.location ? `
-          <div class="exp-location">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span>${escapeHtml(exp.location)}</span>
-          </div>` : ''}
-        <p class="exp-description">${escapeHtml(exp.description)}</p>
-        ${exp.certificateUrl ? `
-          <div class="exp-cert-row">
-            <div class="exp-cert-meta">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-              </svg>
-              <span class="exp-cert-title">${escapeHtml(exp.certificateName || 'Verified Certificate')}</span>
-            </div>
-            <a href="${escapeHtml(exp.certificateUrl)}" target="_blank" rel="noopener noreferrer" class="exp-cert-link" title="Open Verified Certificate">
-              <span>${exp.certificateType === 'image' ? 'View Photo' : 'View PDF'}</span>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-            </a>
-          </div>
-        ` : ''}
       </article>
     `;
   }
@@ -525,59 +521,14 @@ function filterLocalProjects(all) {
 
 function getCardTechTags(techItems) {
   if (!techItems || techItems.length === 0) return { visible: [], remaining: 0 };
-  if (techItems.length <= 2) return { visible: techItems, remaining: 0 };
-
-  const tagWidth = (text) => text.length * 7.2 + 22;
-  const BADGE_WIDTH = 38;
-  const CARD_CONTENT_WIDTH = 270;
-  const GAP = 6;
-
-  // Step 1: Pack Line 1
-  let line1 = [];
-  let line1W = 0;
-  let i = 0;
-
-  for (; i < techItems.length; i++) {
-    const w = tagWidth(techItems[i]);
-    const nextW = line1.length === 0 ? w : line1W + GAP + w;
-    if (nextW <= CARD_CONTENT_WIDTH) {
-      if (i === techItems.length - 1 && line1.length >= 2) {
-        break; // Keep at least 1 tag for Line 2
-      }
-      line1.push(techItems[i]);
-      line1W = nextW;
-    } else {
-      break;
-    }
+  const maxTags = 3;
+  if (techItems.length <= maxTags) {
+    return { visible: techItems, remaining: 0 };
   }
-
-  // Step 2: Pack Line 2 (along with +N badge if more tags remain)
-  let line2 = [];
-  let line2W = 0;
-
-  for (; i < techItems.length; i++) {
-    const w = tagWidth(techItems[i]);
-    const hasRemaining = techItems.length - (line1.length + line2.length + 1) > 0;
-    const badgeW = hasRemaining ? GAP + BADGE_WIDTH : 0;
-    const nextW = line2.length === 0 ? w + badgeW : line2W + GAP + w + badgeW;
-
-    if (nextW <= CARD_CONTENT_WIDTH) {
-      line2.push(techItems[i]);
-      line2W = line2.length === 1 ? w : line2W + GAP + w;
-    } else {
-      break;
-    }
-  }
-
-  // Ensure Line 2 is never empty if Line 1 has >= 2 tags
-  if (line2.length === 0 && line1.length >= 2) {
-    const moved = line1.pop();
-    line2.push(moved);
-  }
-
-  const visible = [...line1, ...line2];
-  const remaining = techItems.length - visible.length;
-  return { visible, remaining };
+  return {
+    visible: techItems.slice(0, maxTags),
+    remaining: techItems.length - maxTags,
+  };
 }
 
 function renderProjects(projects) {
@@ -603,27 +554,31 @@ function renderProjects(projects) {
 
     const { visible: visibleTags, remaining: remainingTags } = getCardTechTags(techItems);
 
+    let cardTitle = p.title || '';
+    if (p.slug === 'pondok-makan-kang-naryo' || cardTitle.includes('Pondok Makan Kang Naryo')) {
+      cardTitle = 'Pondok Makan Kang Naryo – Katalon UI Testing';
+    }
+
     html += `
       <article class="project-card">
         <div class="project-card-top">
           <div class="project-meta-row">
             <span class="project-category-tag">${escapeHtml(p.category)}</span>
-            ${p.isFeatured ? '<span class="project-featured-badge">★ Featured</span>' : ''}
           </div>
-          <h3 class="project-card-title">${escapeHtml(p.title)}</h3>
+          <h3 class="project-card-title">${escapeHtml(cardTitle)}</h3>
           <p class="project-card-desc">${escapeHtml(p.description)}</p>
         </div>
 
-        <div>
+        <div class="project-card-bottom">
           <div class="project-tech-tags">
             ${visibleTags.map((t) => `<span class="tech-tag">${escapeHtml(t)}</span>`).join('')}
             ${remainingTags > 0 ? `<span class="tech-tag tech-tag-count">+${remainingTags}</span>` : ''}
           </div>
 
           <div class="project-card-footer">
-            <button class="btn-view-details" data-slug="${escapeHtml(p.slug)}">
+            <button class="btn-view-details view-detail-btn" data-slug="${escapeHtml(p.slug)}">
               <span>View Details</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </button>
 
             <div class="project-actions">
@@ -652,7 +607,7 @@ function renderProjects(projects) {
     });
   });
 
-  // Setup horizontal sliding controls & dots
+  // Setup horizontal sliding controls
   setupProjectsSlider(projects);
 }
 
@@ -661,31 +616,15 @@ function setupProjectsSlider(projects) {
   const counterText = document.getElementById('projects-counter-text');
   const btnPrev = document.getElementById('btn-projects-prev');
   const btnNext = document.getElementById('btn-projects-next');
-  const dotsContainer = document.getElementById('projects-slider-dots');
 
   if (!container) return;
 
   const total = Array.isArray(projects) ? projects.length : 0;
   if (total === 0) {
-    if (counterText) counterText.textContent = '0 projects found';
-    if (dotsContainer) dotsContainer.innerHTML = '';
+    if (counterText) counterText.textContent = '00 — 00';
     if (btnPrev) btnPrev.disabled = true;
     if (btnNext) btnNext.disabled = true;
     return;
-  }
-
-  // Generate indicator dots
-  if (dotsContainer) {
-    dotsContainer.innerHTML = Array.from({ length: total }, (_, i) => 
-      `<button type="button" class="slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}" aria-label="Go to project ${i + 1}"></button>`
-    ).join('');
-
-    dotsContainer.querySelectorAll('.slider-dot').forEach((dot) => {
-      dot.addEventListener('click', (e) => {
-        const idx = parseInt(e.currentTarget.getAttribute('data-index') || '0', 10);
-        scrollToProjectIndex(idx);
-      });
-    });
   }
 
   function getStep() {
@@ -710,18 +649,9 @@ function setupProjectsSlider(projects) {
     const currentIndex = Math.min(total - 1, Math.max(0, Math.round(scrollLeft / step)));
 
     if (counterText) {
-      counterText.textContent = `Showing project ${currentIndex + 1} of ${total}`;
-    }
-
-    if (dotsContainer) {
-      const dots = dotsContainer.querySelectorAll('.slider-dot');
-      dots.forEach((dot, i) => {
-        if (i === currentIndex) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
-        }
-      });
+      const curStr = String(currentIndex + 1).padStart(2, '0');
+      const totStr = String(total).padStart(2, '0');
+      counterText.textContent = `${curStr} — ${totStr}`;
     }
 
     if (btnPrev) {
@@ -759,6 +689,77 @@ function setupProjectsSlider(projects) {
   updateSliderState();
 }
 
+// Project QA Highlights & Key Activities breakdown dictionary
+const PROJECT_QA_BREAKDOWNS = {
+  'pondok-makan-kang-naryo': {
+    overview: 'Web application and end-to-end automated UI testing suite for a multi-category food ordering and checkout platform.',
+    bullets: [
+      'Designed comprehensive manual test scenarios covering user authentication, menu browsing, and cart checkout.',
+      'Engineered automated UI regression scripts using Katalon Studio for critical user journeys.',
+      'Performed boundary value and negative input validation across food ordering and checkout forms.',
+      'Documented and tracked defects with reproducible steps, expected vs. actual outcomes, and visual logs.'
+    ]
+  },
+  'loafy-bakery-manual-testing': {
+    overview: 'Web-based bakery ordering platform featuring custom backend order processing, catalog browsing, shopping cart workflows, and MySQL relational database.',
+    bullets: [
+      'Executed rigorous manual exploratory and functional testing across user checkout flows and order tracking.',
+      'Designed test matrices covering positive authorization, session timeouts, and inventory boundary edge cases.',
+      'Tested form validation resilience against empty fields, SQL injection characters, and special input values.',
+      'Documented structured bug reports with detailed reproduction steps and severity/priority classification.'
+    ]
+  },
+  'petstore-v2-swagger-api-testing': {
+    overview: 'Comprehensive REST API testing suite for the public Swagger Petstore v2 (/pet) service validating microservice endpoints.',
+    bullets: [
+      'Engineered automated API assertions validating HTTP response status codes (200 OK, 400 Bad Request, 404 Not Found).',
+      'Validated response payloads and schema structures against JSON Schema standards.',
+      'Configured negative testing and edge-case boundary scenarios across pet CRUD endpoints.',
+      'Executed automated batch runs via Postman Collection Runner and documented weak input validation behavior.'
+    ]
+  },
+  'orangehrm-katalon-automation': {
+    overview: 'Functional regression suite and scenario testing for the OrangeHRM human resource management authentication module.',
+    bullets: [
+      'Designed positive and negative test cases verifying valid credential authorization and locked-out user handling.',
+      'Formulated boundary tests for empty username/password combinations and invalid character inputs.',
+      'Asserted UI error banner messages, credential masking, and page redirect validations.',
+      'Authored reproducible defect reports and automated basic playback routines in Katalon Studio.'
+    ]
+  },
+  'xyz-bank-cypress-test': {
+    overview: 'End-to-End test suite for the XYZ Bank web application validating complex multi-role banking transactions and customer journeys.',
+    bullets: [
+      'Formulated 14 comprehensive test scenarios covering Manager workflows (TC-01-MAN to TC-06-MAN: login, customer creation, currency account opening, deletion).',
+      'Automated Customer workflows (TC-01-CUS to TC-08-CUS: deposits, balance validation, insufficient fund withdrawals, and transaction history).',
+      'Implemented clean assertions for modal dialogs, alert notifications, and state changes.',
+      'Explored foundational E2E test scripts utilizing Cypress and JavaScript.'
+    ]
+  }
+};
+
+function getProjectQaBreakdown(project) {
+  if (project.slug && PROJECT_QA_BREAKDOWNS[project.slug]) {
+    return PROJECT_QA_BREAKDOWNS[project.slug];
+  }
+  const rawDesc = project.description || '';
+  const sentences = rawDesc.split(/(?<=[.!?])\s+/).filter(Boolean);
+  if (sentences.length <= 1) {
+    return {
+      overview: rawDesc,
+      bullets: [
+        'Formulated structured test scenarios and verified functional requirements.',
+        'Executed manual exploratory testing across critical application flows.',
+        'Documented test findings, defect reports, and expected behaviors.'
+      ]
+    };
+  }
+  return {
+    overview: sentences[0],
+    bullets: sentences.slice(1).map((s) => s.trim()).filter(Boolean)
+  };
+}
+
 // Project Detail Modal
 async function openProjectModal(slug) {
   const modalBackdrop = document.getElementById('project-modal');
@@ -767,8 +768,8 @@ async function openProjectModal(slug) {
 
   modalBackdrop.classList.add('open');
   modalContent.innerHTML = `
-    <div style="text-align: center; padding: 2rem;">
-      <p style="color: var(--text-secondary); font-size: 0.9rem;">Loading project breakdown...</p>
+    <div style="text-align: center; padding: 3rem 1.5rem;">
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">Loading QA project breakdown...</p>
     </div>`;
 
   let project = FALLBACK_PROJECTS.find((p) => p.slug === slug);
@@ -783,38 +784,96 @@ async function openProjectModal(slug) {
   }
 
   if (!project) {
-    modalContent.innerHTML = `<p style="color: var(--text-muted);">Project details could not be found.</p>`;
+    modalContent.innerHTML = `<p style="color: var(--text-muted); padding: 2rem;">Project details could not be found.</p>`;
     return;
   }
 
+  const qaData = getProjectQaBreakdown(project);
   const techItems = (project.techStack || '').split(',').map((s) => s.trim()).filter(Boolean);
 
+  let displayTitle = project.title || '';
+  if (project.slug === 'pondok-makan-kang-naryo' || displayTitle.includes('Pondok Makan Kang Naryo')) {
+    displayTitle = 'Pondok Makan Kang Naryo – Katalon UI Testing';
+  }
+
+  const categoryName = (project.category || 'QA Automation').toUpperCase();
+
   modalContent.innerHTML = `
-    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-      <span class="project-category-tag">${escapeHtml(project.category)}</span>
-      ${project.isFeatured ? '<span class="project-featured-badge">★ Featured</span>' : ''}
-    </div>
-    <h2>${escapeHtml(project.title)}</h2>
-    <p style="white-space: pre-line;">${escapeHtml(project.description)}</p>
+    <div class="modal-split-layout">
+      <!-- Kolom Kiri (60%): Narasi & Proses QA -->
+      <div class="modal-col-main">
+        <div class="modal-breadcrumb">
+          <span>PROJECTS</span>
+          <span class="modal-breadcrumb-sep">/</span>
+          <span class="modal-breadcrumb-cat">${escapeHtml(categoryName)}</span>
+        </div>
 
-    <div style="margin-bottom: 1.5rem;">
-      <span class="modal-tech-header">Technologies &amp; Test Stack</span>
-      <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
-        ${techItems.map((t) => `<span class="tech-tag">${escapeHtml(t)}</span>`).join('')}
+        <h2 class="modal-project-title" id="modal-project-title">${escapeHtml(displayTitle)}</h2>
+
+        <p class="modal-summary-text">${escapeHtml(qaData.overview)}</p>
+
+        <div class="modal-qa-activities">
+          <h3 class="modal-section-subtitle">Key QA Activities &amp; Scope</h3>
+          <ul class="modal-qa-list">
+            ${qaData.bullets.map((b) => `
+              <li class="modal-qa-item">
+                <span class="modal-qa-bullet-icon" aria-hidden="true">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </span>
+                <span class="modal-qa-item-text">${escapeHtml(b)}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+
+        <div class="modal-footer-actions">
+          ${project.githubUrl ? `
+            <a href="${escapeHtml(project.githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn-modal-primary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+              <span>GitHub Test Suite</span>
+            </a>` : ''}
+          ${project.liveDemoUrl ? `
+            <a href="${escapeHtml(project.liveDemoUrl)}" target="_blank" rel="noopener noreferrer" class="btn-modal-link-clean">
+              <span>Project App / Source</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>` : ''}
+        </div>
       </div>
-    </div>
 
-    <div class="modal-actions-row">
-      ${project.githubUrl ? `
-        <a href="${escapeHtml(project.githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn-modal-primary">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-          <span>GitHub Test Suite</span>
-        </a>` : ''}
-      ${project.liveDemoUrl ? `
-        <a href="${escapeHtml(project.liveDemoUrl)}" target="_blank" rel="noopener noreferrer" class="btn-modal-secondary">
-          <span>Project App / Source</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        </a>` : ''}
+      <!-- Kolom Kanan (40%): Tools & Bukti Kerja -->
+      <div class="modal-col-sidebar">
+        <div class="modal-sidebar-section">
+          <span class="modal-sidebar-label">Technologies &amp; Test Stack</span>
+          <div class="modal-tech-pills">
+            ${techItems.map((t) => `<span class="tech-tag">${escapeHtml(t)}</span>`).join('')}
+          </div>
+        </div>
+
+        <div class="modal-sidebar-section">
+          <span class="modal-sidebar-label">QA Documentation &amp; Evidence</span>
+          <div class="modal-evidence-list">
+            <a href="https://drive.google.com/drive/folders/1pmYXm-BRgx7-NTrwBj92_se_tFxjINm6?usp=drive_link" target="_blank" rel="noopener noreferrer" class="evidence-link-card" title="Open QA Cloud Archive on Google Drive">
+              <div class="evidence-link-icon-wrap">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+              </div>
+              <div class="evidence-link-text">
+                <span class="evidence-link-name">View Test Cases on Drive</span>
+                <span class="evidence-link-desc">Test Scenarios &amp; Matrices ↗</span>
+              </div>
+            </a>
+            ${project.githubUrl ? `
+              <a href="${escapeHtml(project.githubUrl)}" target="_blank" rel="noopener noreferrer" class="evidence-link-card" title="Open Test Suite Repository">
+                <div class="evidence-link-icon-wrap">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                </div>
+                <div class="evidence-link-text">
+                  <span class="evidence-link-name">execution-log &amp; Assertions</span>
+                  <span class="evidence-link-desc">Automated Test Evidence ↗</span>
+                </div>
+              </a>` : ''}
+          </div>
+        </div>
+      </div>
     </div>
   `;
 }
@@ -1133,10 +1192,10 @@ function initProjectFilters() {
 // =============================================================================
 // Dynamic Browser Tab Title Branding (irfanLab)
 function initTabBranding() {
-  const originalTitle = document.title || 'irfanLab — QA Automation & Testing Portfolio 2.0';
+  const originalTitle = document.title || 'irfanLab — Software QA & Manual Testing Portfolio 2.0';
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      document.title = '⚡ irfanLab | QA Automation Test Bench';
+      document.title = '⚡ irfanLab | Software QA & Manual Testing';
     } else {
       document.title = originalTitle;
     }

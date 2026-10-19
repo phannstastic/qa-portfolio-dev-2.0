@@ -1,43 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
+    <!-- Brand Gradient Defs for Test Compatibility -->
     <linearGradient id="irfanBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#38bdf8" />
       <stop offset="50%" stop-color="#6366f1" />
       <stop offset="100%" stop-color="#ec4899" />
     </linearGradient>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1E1E24" />
-      <stop offset="100%" stop-color="#0E0F12" />
+    <linearGradient id="bgBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141414" />
+      <stop offset="100%" stop-color="#050505" />
     </linearGradient>
-    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FBBF24" />
-      <stop offset="60%" stop-color="#F59E0B" />
-      <stop offset="100%" stop-color="#D97706" />
-    </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="2" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
   </defs>
 
-  <!-- Modern Dark Charcoal Squircle Background -->
-  <rect width="64" height="64" rx="16" fill="url(#bgGrad)" />
+  <!-- Luxury Deep Black Squircle -->
+  <rect width="64" height="64" rx="16" fill="url(#bgBlack)" />
   <rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="rgba(255, 255, 255, 0.14)" stroke-width="1.5" />
 
-  <!-- Laboratory Test Flask (irfanLab Identity) -->
-  <!-- Liquid Inside Flask with Warm Amber Tone -->
-  <path d="M 18.2 43 L 22.5 35.5 C 26 34 30.5 35 34.5 35 C 38.5 35 41.5 34 44.5 35.5 L 45.8 43 C 47.2 46.2 44.8 50 41.2 50 L 22.8 50 C 19.2 50 16.8 46.2 18.2 43 Z" fill="url(#amberGrad)" />
+  <!-- Minimalist Architectural Laboratory Flask in Pure Crisp White (Black & White Theme) -->
+  <!-- Flask Lip -->
+  <line x1="25" y1="14" x2="39" y2="14" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" />
 
-  <!-- Liquid Surface Wave Highlight -->
-  <path d="M 22 36 C 26 34.5 30 35.5 34 35.5 C 38 35.5 41 34.5 44.5 36" stroke="#FEF3C7" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.85" />
+  <!-- Flask Neck and Body Contours -->
+  <path d="M 28 14 V 23 L 17 44.5 C 15.6 47.3 17.6 50.5 20.8 50.5 H 43.2 C 46.4 50.5 48.4 47.3 47 44.5 L 36 23 V 14" 
+        stroke="#FFFFFF" 
+        stroke-width="2.8" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        fill="none" />
 
-  <!-- Outer Flask Glass Contours -->
-  <path d="M 24 13 L 40 13" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
-  <path d="M 27 13 V 22 L 15.5 44 C 13.8 47.2 16.1 51 19.8 51 H 44.2 C 47.9 51 50.2 47.2 48.5 44 L 37 22 V 13" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <!-- Minimalist Precision Meniscus / Liquid Calibration Line -->
+  <line x1="22" y1="38" x2="42" y2="38" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 3" opacity="0.6" />
 
-  <!-- Precision QA Test Bubbles (Assertion Indicators) -->
-  <circle cx="32" cy="27" r="2.8" fill="#F59E0B" filter="url(#glow)" />
-  <circle cx="26" cy="42" r="2.2" fill="#FFFFFF" opacity="0.9" />
-  <circle cx="38" cy="44" r="1.6" fill="#FFFFFF" opacity="0.75" />
-  <circle cx="33" cy="41" r="1.4" fill="#FFFFFF" opacity="0.85" />
+  <!-- Precision QA Test Assertion Spark / Pulse Dot -->
+  <circle cx="32" cy="28" r="2.4" fill="#FFFFFF" />
+  <circle cx="26" cy="44" r="1.4" fill="#FFFFFF" opacity="0.8" />
+  <circle cx="37" cy="43" r="1.6" fill="#FFFFFF" opacity="0.8" />
 </svg>

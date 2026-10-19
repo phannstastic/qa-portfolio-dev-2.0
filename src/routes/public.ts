@@ -79,8 +79,8 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
             status: 'success',
             data: {
               name: ownerName,
-              title: 'Quality Assurance Enthusiast',
-              bio: 'Informatics graduate experienced in manual functional testing, UAT support, and test automation. Passionate about ensuring seamless software quality from end to end.',
+              title: 'Software Quality Assurance Tester',
+              bio: 'Informatics graduate specializing in manual functional testing, structured test case design, and UAT/FAT validation—supported by foundational API and UI test automation.',
               email: 'rphannfvs@gmail.com',
               phone: '+62 812-7304-4163',
               location: 'Sleman, Yogyakarta, Indonesia',
@@ -534,19 +534,27 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
             1;
 
           // Dispatch Email Notification (Safe & Non-blocking to database insertion)
-          const emailService = options?.emailService ?? defaultEmailService;
-          try {
-            const emailResult = await emailService.sendContactNotification({
-              name: sanitizedName,
-              email: sanitizedEmail,
-              subject: sanitizedSubject,
-              message: sanitizedMessage,
-            });
-            if (!emailResult.success && !emailResult.skipped) {
-              console.warn('⚠️ [Contact Route] Contact notification email failed to dispatch:', emailResult.error);
+          // Strictly protect user's Resend rate limits & monthly quota during test runs
+          const isTestRun =
+            process.env.NODE_ENV === 'test' ||
+            process.env.DISABLE_EMAIL_SENDING === 'true' ||
+            process.argv.some((a) => a.includes('test'));
+
+          if (!isTestRun || options?.emailService) {
+            const emailService = options?.emailService ?? defaultEmailService;
+            try {
+              const emailResult = await emailService.sendContactNotification({
+                name: sanitizedName,
+                email: sanitizedEmail,
+                subject: sanitizedSubject,
+                message: sanitizedMessage,
+              });
+              if (!emailResult.success && !emailResult.skipped) {
+                console.warn('⚠️ [Contact Route] Contact notification email failed to dispatch:', emailResult.error);
+              }
+            } catch (emailErr: any) {
+              console.error('❌ [Contact Route] Unexpected error during contact notification email dispatch:', emailErr?.message || emailErr);
             }
-          } catch (emailErr: any) {
-            console.error('❌ [Contact Route] Unexpected error during contact notification email dispatch:', emailErr?.message || emailErr);
           }
 
           set.status = 201;

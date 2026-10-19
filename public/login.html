@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Admin Authentication Portal for irfan.Lab">
+  <meta name="description" content="Admin Authentication Portal for irfanLab">
   <title>Admin Login &bull; irfan.Lab</title>
 
   <!-- Favicons -->
@@ -23,16 +23,18 @@
 <body class="admin-body">
 
   <div class="login-page-wrap">
+    <div class="login-ambient-glow"></div>
+
     <div class="login-card">
       <div class="login-brand-header">
-        <div style="display: flex; justify-content: center; margin-bottom: 0.75rem;">
+        <div class="login-logo-row">
           <a href="/" class="brand-logo" aria-label="Back to irfanLab">
-            <span>irfan<span style="font-weight: 800;">Lab</span><span style="color: #F59E0B; font-weight: 900;">.</span></span>
+            <span>irfan<span style="font-weight: 800;">Lab</span><span class="brand-dot">.</span></span>
             <span class="brand-badge">CMS</span>
           </a>
         </div>
-        <h1>Admin Portal</h1>
-        <p>Sign in to manage projects, experiences, and messages</p>
+        <h1 class="login-title">Admin Portal</h1>
+        <p class="login-subtitle">Sign in to manage projects, work experiences, skills library, and messages.</p>
       </div>
 
       <!-- Feedback alert banner -->
@@ -43,40 +45,60 @@
           <label for="login-email" class="form-label">
             Email Address <span class="req">*</span>
           </label>
-          <input
-            type="email"
-            id="login-email"
-            class="form-input"
-            placeholder="admin@example.com"
-            required
-            autocomplete="email"
-            maxlength="191"
-          >
+          <div class="input-icon-wrap">
+            <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <input
+              type="email"
+              id="login-email"
+              class="form-input with-icon"
+              placeholder="admin@example.com"
+              required
+              autocomplete="email"
+              maxlength="191"
+            >
+          </div>
         </div>
 
         <div class="form-group">
           <label for="login-password" class="form-label">
             Password <span class="req">*</span>
           </label>
-          <input
-            type="password"
-            id="login-password"
-            class="form-input"
-            placeholder="Enter your password"
-            required
-            autocomplete="current-password"
-            maxlength="255"
-          >
+          <div class="input-icon-wrap">
+            <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input
+              type="password"
+              id="login-password"
+              class="form-input with-icon"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+              maxlength="255"
+            >
+          </div>
         </div>
 
-        <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
-          Sign In to Dashboard
+        <button type="submit" id="login-submit-btn" class="btn btn-primary btn-login">
+          <span>Sign In to Dashboard</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
         </button>
       </form>
 
-      <div style="text-align: center; margin-top: 1.75rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
-        <a href="/" style="font-size: 0.85rem; color: var(--text-muted); transition: color 0.2s ease;">
-          &larr; Back to irfan.Lab
+      <div class="login-footer-nav">
+        <a href="/" class="login-back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back to irfanLab Portfolio</span>
         </a>
       </div>
     </div>
