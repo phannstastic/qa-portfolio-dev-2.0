@@ -1,17 +1,19 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import { getDbConfig } from './index';
 
 dotenv.config();
 
 export async function runMigrationV2() {
-  const dbName = process.env.DB_NAME || 'qa_portfolio_20_db';
+  const dbConfig = getDbConfig();
+  const dbName = dbConfig.database || process.env.DB_NAME || 'qa_portfolio_dev';
   console.log(`🚀 Running Migration for ${dbName}...`);
 
   const connection = await mysql.createConnection({
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: Number(process.env.DB_PORT) || 3306,
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
+    host: dbConfig.host || process.env.DB_HOST || '127.0.0.1',
+    port: Number(dbConfig.port || process.env.DB_PORT) || 3306,
+    user: dbConfig.user || process.env.DB_USER || 'root',
+    password: dbConfig.password || process.env.DB_PASSWORD || '',
     database: dbName,
   });
 
@@ -21,7 +23,9 @@ export async function runMigrationV2() {
   } catch (_e) {
     // Database already exists on managed cloud hosts (like Silly Development)
   }
-  await connection.query(`USE \`${dbName}\`;`);
+  try {
+    await connection.query(`USE \`${dbName}\`;`);
+  } catch (_e) {}
 
   // Users
   await connection.query(`
@@ -179,6 +183,30 @@ export async function runMigrationV2() {
       );
     `);
     console.log('✅ Seeded default 404 music scene (eaJ - pause)');
+  }
+
+  // Seed default article if articles table is empty
+  const [existingArticles]: any = await connection.query(`SELECT id FROM articles LIMIT 1;`);
+  if (!existingArticles || existingArticles.length === 0) {
+    const defaultArticleContent = `Selamat datang di ruang personal saya. Nama saya **Muhammad Irfan Trinugroho**, atau biasa dipanggil **Irfan**.\n\nJika kamu datang dari halaman portfolio utama, kamu mungkin mengenal saya sebagai seorang lulusan Teknik Informatika (*Informatics*) yang mendedikasikan fokus pada dunia **Software Quality Assurance (QA)**—mulai dari manual functional testing, menyusun skenario dan test case terstruktur, hingga UAT/FAT validation dan automasi pengujian dasar.\n\nNamun di ruang tulisan ini, saya ingin melepas topi formal itu sejenak. Ruang ini adalah sudut tenang tempat saya mencatat hal-hal yang saya cintai di luar layar terminal: makanan enak, sudut kota yang teduh, secangkir kopi, dan renungan sehari-hari.\n\n---\n\n## 1. Menemukan Keindahan dalam Ketelitian\n\nSejak masa kuliah hingga terjun ke industri pengujian perangkat lunak—bekerja bersama tim di Noctura Kreasi Sistema, PT Vortex Buana Edumedia, hingga PT Len Industri (Persero)—saya menyadari satu hal yang mendasar: **saya sangat menyukai detail**.\n\nBagi seorang QA, detail adalah segalanya. Menemukan satu kejanggalan kecil atau *edge case* yang terlewat bukan sekadar tugas teknis, melainkan bentuk empati kepada pengguna akhir agar mereka merasakan pengalaman digital yang mulus, stabil, dan menyenangkan.\n\n![Meja Kerja & Catatan Pengujian](/images/articles/qa-workspace-desk.jpg)\n*Sudut ruang kerja harian: catatan skenario pengujian, secangkir minuman hangat, dan suasana yang tenang untuk berpikir jernih.*\n\nMenariknya, rasa ingin tahu terhadap detail ini tidak berhenti ketika laptop ditutup. Cara pandang tersebut secara alami mewarnai bagaimana saya menikmati hidup sehari-hari.\n\n---\n\n## 2. Di Luar Layar: Makanan Enak, Artisan Gelato, dan Sudut Kota\n\nDi waktu luang, saya selalu menikmati hal-hal yang bergerak dengan ritme lebih tenang (*slow living*):\n\n- **Menjelajahi Kuliner & Artisan Gelato:** Saya selalu antusias mencicipi kuliner autentik dan berburu gelato berkualitas—terutama varian matcha pekat yang seimbang atau pistachio yang gurih dan *nutty*.\n- **Jalan Pagi & Mengamati Sudut Kota:** Berjalan kaki santai di pagi hari, menikmati aroma tanah basah sehabis hujan, dan mengamati arsitektur bangunan tua atau kafe kecil yang nyaman.\n- **Rasa Ingin Tahu Teknologi & Eksplorasi Baru:** Mengulik perkembangan teknologi modern, bereksperimen dengan desain antarmuka minimalis, serta mencoba berbagai tool baru yang membuat alur kerja semakin efisien.\n\nBerikut catatan ringkas seputar rutinitas dan ruang gerak saya:\n\n- **Lokasi & Home Base:** Indonesia (Jawa Barat)\n- **Fokus Karier:** Software QA, Manual Testing & UAT Support\n- **Ritual Akhir Pekan:** Jalan pagi, hunting artisan matcha gelato & kopi\n- **Rating Personal Hidup:** ★ 10 / 10 untuk ritme hidup yang seimbang\n\n---\n\n## 3. Mengapa Ruang Catatan Ini Ada?\n\nDunia teknologi sering kali bergerak sangat cepat. Fitur baru, rilis baru, deadline yang padat. Di tengah hiruk-pikuk itu, memiliki sebuah wadah untuk berhenti sejenak, mengumpulkan pikiran, dan menuliskan cerita adalah cara terbaik bagi saya untuk merawat keseimbangan (*mindfulness*).\n\nBlog ini bukan jurnal akademis yang kaku, melainkan catatan jujur dari perjalanan saya:\n1. **Food & Bites:** Ulasan jujur seputar kafe, gelato, dan tempat makan yang berkesan.\n2. **Travel & Places:** Cerita sudut jalanan kota, tempat menepi, dan pengalaman jalan-jalan santai.\n3. **Life & Journal:** Renungan personal seputar proses belajar, karier, dan kebiasaan hidup bermakna.\n4. **Tech & Notes:** Catatan teknis ringan seputar testing, quality assurance, dan dunia rekayasa perangkat lunak.\n\n---\n\n## Mari Terhubung\n\nTerima kasih sudah menyempatkan waktu membaca cerita kecil ini. Entah kamu sesama pegiat teknologi, penguji perangkat lunak, sesama penikmat kuliner, atau sekadar pejalan yang kebetulan mampir, senang bisa berbagi cerita denganmu.\n\nJika ingin bertukar ide atau sekadar menyapa, jangan ragu untuk menghubungi saya melalui tombol **Get in touch** di atas atau lewat LinkedIn dan Instagram!\n`;
+
+    await connection.execute(
+      `INSERT INTO articles (
+        title, slug, excerpt, content, category, tags, read_time, cover_image_url, is_published, published_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW());`,
+      [
+        'Halo, Saya Irfan: Di Antara Pengujian Perangkat Lunak, Secangkir Kopi, dan Detail-Detail Kecil',
+        'halo-saya-irfan-pengujian-kopi-dan-detail-kecil',
+        'Cerita tentang siapa saya di balik layar pengujian software—lulusan Informatika yang mencintai detail, penikmat artisan gelato dan sudut tenang kota, serta alasan mengapa ruang catatan ini dibuat.',
+        defaultArticleContent,
+        'Life & Journal',
+        'About Me, Life & Journal, Personal Story, QA Mindset, Slow Living',
+        '3 min read',
+        '/images/articles/qa-workspace-desk.jpg',
+        1,
+      ]
+    );
+    console.log('✅ Seeded default article (Halo, Saya Irfan)');
   }
 
   console.log(`✅ All tables created and verified in ${dbName}`);

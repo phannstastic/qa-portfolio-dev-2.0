@@ -129,6 +129,13 @@ export const createServer = (options?: AppServerOptions) => {
 export const app = createServer();
 
 if (import.meta.main) {
+  try {
+    const { runMigrationV2 } = await import('./db/migrate-v2');
+    await runMigrationV2();
+  } catch (err: any) {
+    console.error('⚠️ Auto-migration on startup failed or skipped:', err?.message || err);
+  }
+
   const server = app.listen({ port, hostname }, () => {
     console.log(`🦊 Elysia server is running at http://${hostname === '0.0.0.0' ? 'localhost' : hostname}:${port}`);
     console.log(`📚 Swagger documentation available at http://${hostname === '0.0.0.0' ? 'localhost' : hostname}:${port}/swagger`);

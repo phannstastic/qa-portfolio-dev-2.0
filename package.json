@@ -6,13 +6,14 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "start": "bun src/index.ts",
+    "start": "bun src/db/migrate-v2.ts && bun src/index.ts",
     "build": "bun build src/index.ts --outdir ./dist --target bun",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "test:e2e": "bun tests/e2e/run-e2e.ts tests/e2e/features/**/*.feature",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun src/db/migrate.ts",
+    "db:migrate:v2": "bun src/db/migrate-v2.ts",
     "db:seed": "bun src/db/seed.ts"
   },
   "dependencies": {

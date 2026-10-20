@@ -504,11 +504,11 @@
   async function loadOverviewData() {
     try {
       const [projRes, expRes, contactRes, tsRes, artRes] = await Promise.all([
-        adminFetch('/api/admin/projects'),
-        adminFetch('/api/admin/experiences'),
-        adminFetch('/api/admin/contacts'),
-        adminFetch('/api/admin/tech-stacks'),
-        adminFetch('/api/admin/articles'),
+        adminFetch('/api/admin/projects').catch(() => ({ data: [] })),
+        adminFetch('/api/admin/experiences').catch(() => ({ data: [] })),
+        adminFetch('/api/admin/contacts').catch(() => ({ data: [] })),
+        adminFetch('/api/admin/tech-stacks').catch(() => ({ data: [] })),
+        adminFetch('/api/admin/articles').catch(() => ({ data: [] })),
       ]);
 
       cachedProjects = projRes.data || [];
