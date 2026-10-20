@@ -2101,6 +2101,13 @@ html[data-theme="dark"] .theme-icon-moon {
   color: #FFFFFF;
 }
 
+.feedback-banner.warning {
+  display: block;
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  color: #B45309;
+}
+
 /* --------------------------------------------------------------------------
    12. Project Detail Modal Dialog
    -------------------------------------------------------------------------- */
@@ -2826,6 +2833,11 @@ html[data-theme="dark"] .feedback-banner.error {
   background: rgba(239, 68, 68, 0.15);
   color: #F87171;
   border-color: rgba(239, 68, 68, 0.3);
+}
+html[data-theme="dark"] .feedback-banner.warning {
+  background: rgba(234, 179, 8, 0.15);
+  color: #FBBF24;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 /* Mobile Header Adjustment */

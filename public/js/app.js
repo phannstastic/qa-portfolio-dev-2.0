@@ -1027,6 +1027,30 @@ function initContactForm() {
 
   if (!form || !messageInput) return;
 
+  let isSubmitting = false;
+  let cooldownInterval = null;
+
+  function startCooldown(seconds = 30) {
+    if (!submitBtn) return;
+    submitBtn.disabled = true;
+    let remaining = seconds;
+    const btnText = submitBtn.querySelector('.btn-text');
+    if (btnText) btnText.textContent = `Sent! Wait (${remaining}s)`;
+
+    if (cooldownInterval) clearInterval(cooldownInterval);
+    cooldownInterval = setInterval(() => {
+      remaining -= 1;
+      if (remaining > 0) {
+        if (btnText) btnText.textContent = `Sent! Wait (${remaining}s)`;
+      } else {
+        clearInterval(cooldownInterval);
+        cooldownInterval = null;
+        submitBtn.disabled = false;
+        if (btnText) btnText.textContent = 'Send Message';
+      }
+    }, 1000);
+  }
+
   messageInput.addEventListener('input', () => {
     const len = messageInput.value.length;
     if (charCounter) charCounter.textContent = `${len} / 500`;
@@ -1039,6 +1063,8 @@ function initContactForm() {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
 
     // Clear previous feedback
     if (feedbackEl) {
@@ -1077,9 +1103,11 @@ function initContactForm() {
 
     if (hasErrors) return;
 
+    isSubmitting = true;
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.querySelector('.btn-text').textContent = 'Submitting...';
+      const btnText = submitBtn.querySelector('.btn-text');
+      if (btnText) btnText.textContent = 'Submitting...';
     }
 
     try {
@@ -1089,31 +1117,56 @@ function initContactForm() {
         body: JSON.stringify({ name, email, subject, message }),
       });
 
-      const body = await res.json();
+      const body = await res.json().catch(() => ({}));
+
+      if (res.status === 429) {
+        if (feedbackEl) {
+          feedbackEl.className = 'feedback-banner warning';
+          feedbackEl.textContent =
+            body.message || 'A duplicate message was recently received. Please wait a moment before sending again.';
+          feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          const btnText = submitBtn.querySelector('.btn-text');
+          if (btnText) btnText.textContent = 'Send Message';
+        }
+        return;
+      }
 
       if (res.ok && body.status === 'success') {
         if (feedbackEl) {
           feedbackEl.className = 'feedback-banner success';
           feedbackEl.textContent = 'Thank you! Your inquiry has been sent successfully. I will get back to you shortly.';
+          feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         form.reset();
         if (charCounter) charCounter.textContent = '0 / 500';
+        startCooldown(30);
       } else {
-        throw new Error(body.message || 'Failed to submit message.');
+        if (feedbackEl) {
+          feedbackEl.className = 'feedback-banner error';
+          feedbackEl.textContent = body.message || 'Failed to submit message. Please try again.';
+          feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          const btnText = submitBtn.querySelector('.btn-text');
+          if (btnText) btnText.textContent = 'Send Message';
+        }
       }
     } catch (err) {
       // In offline/dev environment without database running, show optimistic confirmation
       if (feedbackEl) {
         feedbackEl.className = 'feedback-banner success';
         feedbackEl.textContent = 'Message received! Thank you for reaching out. (Saved locally in preview mode)';
+        feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
       form.reset();
       if (charCounter) charCounter.textContent = '0 / 500';
+      startCooldown(30);
     } finally {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.querySelector('.btn-text').textContent = 'Send Message';
-      }
+      isSubmitting = false;
     }
   });
 }

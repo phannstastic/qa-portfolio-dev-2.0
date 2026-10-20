@@ -9,6 +9,14 @@ export interface PublicRouteOptions {
   emailService?: EmailService;
 }
 
+// Anti-spam and duplicate submission deduplication cache (fingerprint -> timestamp)
+const recentContactSubmissions = new Map<string, number>();
+const DUPLICATE_COOLDOWN_MS = 60 * 1000; // 60 seconds
+
+export function clearContactSubmissionsCache() {
+  recentContactSubmissions.clear();
+}
+
 /**
  * Factory for Public Portfolio routes.
  * Supports dependency injection for database connection to enable hermetic unit testing.
@@ -520,6 +528,27 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
             };
           }
 
+          // Anti-duplicate protection: prevent duplicate submission within 60 seconds
+          const submissionFingerprint = `${sanitizedEmail}:${sanitizedMessage.toLowerCase()}`;
+          const now = Date.now();
+          const lastSubmittedAt = recentContactSubmissions.get(submissionFingerprint);
+
+          if (lastSubmittedAt && now - lastSubmittedAt < DUPLICATE_COOLDOWN_MS) {
+            set.status = 429;
+            return {
+              status: 'error',
+              message: 'A duplicate message was recently received. Please wait a moment before sending again.',
+            };
+          }
+
+          // Housekeeping: remove entries older than cooldown
+          for (const [key, timestamp] of recentContactSubmissions.entries()) {
+            if (now - timestamp > DUPLICATE_COOLDOWN_MS) {
+              recentContactSubmissions.delete(key);
+            }
+          }
+          recentContactSubmissions.set(submissionFingerprint, now);
+
           const insertResult = await db.insert(contacts).values({
             name: sanitizedName,
             email: sanitizedEmail,
@@ -627,6 +656,10 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
             }),
           }),
           400: t.Object({
+            status: t.Literal('error'),
+            message: t.String(),
+          }),
+          429: t.Object({
             status: t.Literal('error'),
             message: t.String(),
           }),

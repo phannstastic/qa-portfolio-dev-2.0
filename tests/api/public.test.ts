@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it, beforeEach } from 'bun:test';
 import { createServer } from '../../src/index';
+import { clearContactSubmissionsCache } from '../../src/routes/public';
 import { MySqlDialect } from 'drizzle-orm/mysql-core';
 import { users, projects, experiences, contacts } from '../../src/db';
 
@@ -504,6 +505,10 @@ describe('Public API Suite (Task 5)', () => {
 
   // 6. POST /api/contacts
   describe('POST /api/contacts', () => {
+    beforeEach(() => {
+      clearContactSubmissionsCache();
+    });
+
     it('returns 201 and created contact data when valid payload with subject is submitted', async () => {
       const mockDb = createMockPublicDb();
       const app = createServer({ db: mockDb });
@@ -661,6 +666,41 @@ describe('Public API Suite (Task 5)', () => {
         status: 'error',
         message: 'Failed to submit contact message',
       });
+    });
+
+    it('returns 429 when duplicate contact message is submitted within 60 seconds', async () => {
+      const mockDb = createMockPublicDb();
+      const app = createServer({ db: mockDb });
+
+      const payload = {
+        name: 'Duplicate Tester',
+        email: 'duplicate@example.com',
+        subject: 'Anti-Spam Verification',
+        message: 'This message should trigger duplicate rejection when posted twice in a row.',
+      };
+
+      // First submission: should succeed (201)
+      const res1 = await app.handle(
+        new Request('http://localhost/api/contacts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      );
+      expect(res1.status).toBe(201);
+
+      // Second identical submission within 60s: should be rejected with 429
+      const res2 = await app.handle(
+        new Request('http://localhost/api/contacts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      );
+      expect(res2.status).toBe(429);
+      const body2 = (await res2.json()) as any;
+      expect(body2.status).toBe('error');
+      expect(body2.message).toContain('duplicate');
     });
   });
 
