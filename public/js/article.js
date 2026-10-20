@@ -299,11 +299,23 @@ function enhanceImages(container) {
       const figcaption = document.createElement('figcaption');
       figcaption.className = 'article-img-caption';
       figcaption.textContent = captionText;
+      figcaption.style.textAlign = 'center';
+      figcaption.style.textAlignLast = 'center';
+      figcaption.style.display = 'block';
+      figcaption.style.margin = '0.75rem auto 0.5rem';
       figure.appendChild(figcaption);
     }
 
-    if (parentP && parentP.children.length === 1) {
-      parentP.parentNode.replaceChild(figure, parentP);
+    if (parentP && parentP.parentNode) {
+      const nextNode = img.nextSibling;
+      if (nextNode && (nextNode.nodeName === 'BR' || (nextNode.nodeName === '#text' && !nextNode.textContent.trim()))) {
+        nextNode.remove();
+      }
+      parentP.parentNode.insertBefore(figure, parentP);
+      img.remove();
+      if (!parentP.textContent.trim() && parentP.children.length === 0) {
+        parentP.remove();
+      }
     } else if (img.parentNode) {
       img.parentNode.replaceChild(figure, img);
     }
