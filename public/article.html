@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" id="meta-description"
+    content="Personal stories, food reviews, lifestyle notes, and tech curiosities by Muhammad Irfan Trinugroho.">
+  <meta name="author" content="Muhammad Irfan Trinugroho">
+  <title id="page-title">irfanLab — Story &amp; Notes</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/favicon-32x32.png">
+
+  <!-- Google Fonts: Inter, Plus Jakarta Sans, JetBrains Mono, Lora -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Cache Control -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- Minimalist 2.0 Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css?v=2.2.3">
+</head>
+
+<body class="blog-layout">
+
+  <!-- Reading Progress Bar (Fixed Top) -->
+  <div class="reading-progress-track">
+    <div id="reading-progress-fill" class="reading-progress-fill"></div>
+  </div>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="brand-mark" aria-label="irfanLab Home">
+        <span class="brand-text">irfan<span class="brand-lab">Lab</span><span class="brand-dot">.</span></span>
+      </a>
+
+      <div class="header-actions">
+        <!-- Back to Blog Link -->
+        <a href="/blog" class="header-nav-link" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); text-decoration: none; padding: 0.4rem 0.85rem; border-radius: var(--radius-full); transition: all var(--transition-fast);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>All Stories</span>
+        </a>
+
+        <!-- Theme Toggle Button (Light / Dark Mode) -->
+        <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle theme" title="Toggle theme (Light / Dark)">
+          <svg class="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <a href="/#contact" class="btn-hit-me-up">
+          <span>Get in touch</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Article Content -->
+  <main class="blog-main">
+    <div class="article-reader-wrap">
+      <!-- Article Header (Clean Editorial Layout: Category • Date • Read Time -> Title -> Lead) -->
+      <header class="article-reader-header">
+        <div class="article-header-meta-row">
+          <div class="article-meta-left">
+            <span id="article-category" class="article-meta-category">STORIES</span>
+            <span class="meta-dot">●</span>
+            <span id="article-date" class="article-meta-date">Oct 20, 2026</span>
+            <span class="meta-dot">●</span>
+            <span id="article-readtime" class="article-meta-readtime">3 MIN READ</span>
+          </div>
+
+          <button type="button" id="btn-copy-link-top" class="btn-share-minimal" title="Copy story link" aria-label="Copy story link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <span id="copy-link-top-text">Share</span>
+          </button>
+        </div>
+
+        <h1 id="article-title" class="article-reader-title">Loading Story...</h1>
+      </header>
+
+      <!-- Rendered Article Body -->
+      <article id="article-markdown-body" class="article-markdown-body">
+        <div class="skeleton-card" style="height: 350px; border-radius: var(--radius-md);"></div>
+      </article>
+
+      <!-- Share Row -->
+      <div class="article-share-row">
+        <span class="share-label">SHARE THIS STORY</span>
+        <div class="share-buttons-group">
+          <button type="button" id="btn-copy-link-bottom" class="btn-share">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <span>Copy Link</span>
+          </button>
+          <a id="btn-share-linkedin" href="#" target="_blank" rel="noopener noreferrer" class="btn-share">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            <span>LinkedIn</span>
+          </a>
+          <a id="btn-share-twitter" href="#" target="_blank" rel="noopener noreferrer" class="btn-share">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+            </svg>
+            <span>Twitter / X</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Author Bio Footer Box -->
+      <section class="article-author-bio-card">
+        <div class="bio-avatar-lg">IT</div>
+        <div class="bio-content">
+          <h4>Written by Muhammad Irfan Trinugroho</h4>
+          <p>
+            Software QA engineer by day, food explorer, gelato enthusiast, and casual writer by night. Sharing reflections on life, good bites, travel corners, and technology.
+          </p>
+          <div class="bio-links-text-row">
+            <a href="https://www.linkedin.com/in/muhirfant/" target="_blank" rel="noopener noreferrer" class="bio-text-link">
+              <span>LinkedIn</span>
+              <span class="link-arrow">↗</span>
+            </a>
+            <span class="bio-dot">•</span>
+            <a href="https://github.com/phannstastic" target="_blank" rel="noopener noreferrer" class="bio-text-link">
+              <span>GitHub</span>
+              <span class="link-arrow">↗</span>
+            </a>
+            <span class="bio-dot">•</span>
+            <a href="/#contact" class="bio-text-link">
+              <span>Contact</span>
+              <span class="link-arrow">↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Image Lightbox Modal for Article Photos -->
+  <div id="image-lightbox" class="image-lightbox-backdrop" aria-hidden="true" title="Click anywhere or press Esc to close">
+    <img id="image-lightbox-img" class="image-lightbox-img" src="" alt="Enlarged view">
+    <span id="image-lightbox-caption" class="image-lightbox-caption"></span>
+  </div>
+
+  <!-- Site Footer (Native irfanLab Design) -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <span class="footer-brand">irfan<span class="footer-lab">Lab</span><span class="footer-dot">.</span></span>
+        <p class="footer-copy">&copy; 2026 Muhammad Irfan Trinugroho. All rights reserved.</p>
+      </div>
+      <div class="footer-right">
+        <a href="/" class="footer-link">Portfolio</a>
+        <a href="/blog" class="footer-link active" aria-current="page" style="color: var(--accent-gold); font-weight: 600;">Blog</a>
+        <a href="https://github.com/phannstastic" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+        <a href="https://www.linkedin.com/in/muhirfant/" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Markdown Renderer & Article Client Script -->
+  <script src="/js/vendor/marked.min.js"></script>
+  <script src="/js/article.js?v=2.1.0"></script>
+</body>
+
+</html>

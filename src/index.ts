@@ -87,6 +87,39 @@ export const createServer = (options?: AppServerOptions) => {
       set.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0';
       return Bun.file('public/admin.html');
     })
+    .get('/blog', ({ set }) => {
+      set.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0';
+      return Bun.file('public/blog.html');
+    })
+    .get('/blog/:slug', ({ set }) => {
+      set.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0';
+      return Bun.file('public/article.html');
+    })
+    .get('/articles/:slug', ({ set }) => {
+      set.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0';
+      return Bun.file('public/article.html');
+    })
+    .get('/404', ({ set }) => {
+      set.status = 404;
+      set.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0';
+      return Bun.file('public/404.html');
+    })
+    .onError(({ code, set, request }) => {
+      if (code === 'NOT_FOUND') {
+        const url = new URL(request.url);
+        if (url.pathname.startsWith('/api/')) {
+          set.status = 404;
+          return {
+            status: 'error',
+            message: 'Endpoint not found',
+          };
+        }
+        set.status = 404;
+        set.headers['Content-Type'] = 'text/html; charset=utf-8';
+        set.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0';
+        return Bun.file('public/404.html');
+      }
+    })
     .use(healthRoutes)
     .use(createAuthRoutes({ ...options, db: authDb }))
     .use(createPublicRoutes({ ...options, db: sharedDb }))

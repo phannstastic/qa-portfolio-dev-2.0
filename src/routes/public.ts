@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { eq, or, and, like, asc, desc } from 'drizzle-orm';
-import { createDbConnection, users, projects, experiences, contacts, techStacks } from '../db';
+import { createDbConnection, users, projects, experiences, contacts, techStacks, articles, errorScenes } from '../db';
 
 import { defaultEmailService, type EmailService } from '../services/email';
 
@@ -146,7 +146,7 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
             .orderBy(asc(techStacks.sortOrder), asc(techStacks.name));
 
           if (techList && techList.length > 0) {
-            const standard = techList.filter((s) => !s.isLearning && s.category !== 'Currently Learning');
+            const standard = techList.filter((s: typeof techStacks.$inferSelect) => !s.isLearning && s.category !== 'Currently Learning');
             const categoryMap = new Map<string, string[]>();
 
             for (const s of standard) {
@@ -160,7 +160,7 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
               items,
             }));
 
-            const skills: string[] = techList.map((s) => s.name);
+            const skills: string[] = techList.map((s: typeof techStacks.$inferSelect) => s.name);
 
             return {
               status: 'success',
@@ -670,7 +670,172 @@ export const createPublicRoutes = (options?: PublicRouteOptions) => {
           tags: ['Tech Stacks'],
         },
       }
+    )
+
+    // 6. GET /api/articles - List published articles
+    .get(
+      '/articles',
+      async ({ query, set }) => {
+        const db = options?.db || createDbConnection();
+        try {
+          const { category, search } = (query || {}) as { category?: string; search?: string };
+
+          const conditions = [eq(articles.isPublished, true)];
+
+          if (category && category !== 'all') {
+            conditions.push(eq(articles.category, category));
+          }
+
+          if (search && search.trim().length > 0) {
+            const searchTerm = `%${search.trim()}%`;
+            conditions.push(
+              or(
+                like(articles.title, searchTerm),
+                like(articles.excerpt, searchTerm),
+                like(articles.tags, searchTerm)
+              )!
+            );
+          }
+
+          const results = await db
+            .select({
+              id: articles.id,
+              title: articles.title,
+              slug: articles.slug,
+              excerpt: articles.excerpt,
+              category: articles.category,
+              tags: articles.tags,
+              readTime: articles.readTime,
+              coverImageUrl: articles.coverImageUrl,
+              isPublished: articles.isPublished,
+              publishedAt: articles.publishedAt,
+              createdAt: articles.createdAt,
+            })
+            .from(articles)
+            .where(and(...conditions))
+            .orderBy(desc(articles.publishedAt), desc(articles.createdAt));
+
+          return {
+            status: 'success',
+            data: results || [],
+          };
+        } catch (err: any) {
+          console.error('❌ Database error retrieving articles:', err?.message || err);
+          set.status = 500;
+          return {
+            status: 'error',
+            message: 'Failed to retrieve articles',
+          };
+        }
+      },
+      {
+        query: t.Optional(
+          t.Object({
+            category: t.Optional(t.String()),
+            search: t.Optional(t.String()),
+          })
+        ),
+        detail: {
+          summary: 'Get Published Articles',
+          description: 'Returns published blog posts and technical articles with optional category and search filtering.',
+          tags: ['Articles'],
+        },
+      }
+    )
+
+    // 7. GET /api/articles/:slug - Get single published article by slug
+    .get(
+      '/articles/:slug',
+      async ({ params: { slug }, set }) => {
+        const db = options?.db || createDbConnection();
+        try {
+          const cleanSlug = slug.trim().toLowerCase();
+          const results = await db
+            .select()
+            .from(articles)
+            .where(and(eq(articles.slug, cleanSlug), eq(articles.isPublished, true)))
+            .limit(1);
+
+          if (!results || results.length === 0) {
+            set.status = 404;
+            return {
+              status: 'error',
+              message: 'Article not found',
+            };
+          }
+
+          return {
+            status: 'success',
+            data: results[0],
+          };
+        } catch (err: any) {
+          console.error('❌ Database error retrieving article by slug:', err?.message || err);
+          set.status = 500;
+          return {
+            status: 'error',
+            message: 'Failed to retrieve article',
+          };
+        }
+      },
+      {
+        params: t.Object({
+          slug: t.String(),
+        }),
+        detail: {
+          summary: 'Get Article by Slug',
+          description: 'Returns full article details and markdown content for a published article.',
+          tags: ['Articles'],
+        },
+      }
+    )
+
+    // =========================================================================
+    // 7. 404 Music Scene Settings (Public)
+    // =========================================================================
+    .get(
+      '/error-scene',
+      async () => {
+        const db = options?.db || createDbConnection();
+        try {
+          const scenes = await db
+            .select()
+            .from(errorScenes)
+            .where(eq(errorScenes.isActive, true))
+            .limit(1);
+
+          return {
+            status: 'success',
+            data: scenes[0] || DEFAULT_ERROR_SCENE,
+          };
+        } catch (_err) {
+          return {
+            status: 'success',
+            data: DEFAULT_ERROR_SCENE,
+          };
+        }
+      },
+      {
+        detail: {
+          summary: 'Get 404 Music Scene Settings',
+          description: 'Returns the active music video, song, lyrics, and narrative for the 404 page.',
+          tags: ['System'],
+        },
+      }
     );
+};
+
+export const DEFAULT_ERROR_SCENE = {
+  headline: 'Wrong Scene?',
+  youtubeUrl: 'https://www.youtube.com/watch?v=N2kz9EOtIPQ',
+  youtubeVideoId: 'N2kz9EOtIPQ',
+  artist: 'eaJ',
+  songTitle: 'pause',
+  lyricQuote: 'Scene out of a movie, I hope it never ends.',
+  message: 'He wishes that beautiful scene would never end. You, on the other hand, seem to have stumbled into a deleted scene.',
+  actionHint: "Don't worry, just hit the button below to 'Play' your journey again from the homepage.",
+  buttonText: 'Play',
+  buttonUrl: '/',
+  isActive: true,
 };
 
 export const publicRoutes = createPublicRoutes();

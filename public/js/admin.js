@@ -337,6 +337,8 @@
     setupExperiencesCRUD();
     setupTechStacksCRUD();
     setupContactsManagement();
+    setupArticlesCRUD();
+    setupErrorSceneSettings();
     setupMobileSidebar();
 
     // Initial load: Overview
@@ -400,14 +402,14 @@
     // Hash change support
     window.addEventListener('hashchange', () => {
       const hash = window.location.hash.replace('#', '');
-      if (['overview', 'projects', 'experiences', 'tech-stacks', 'contacts'].includes(hash)) {
+      if (['overview', 'projects', 'experiences', 'tech-stacks', 'articles', 'contacts', 'error-scene'].includes(hash)) {
         handleViewSwitch(hash);
       }
     });
   }
 
   function handleViewSwitch(viewName) {
-    const validViews = ['overview', 'projects', 'experiences', 'tech-stacks', 'contacts'];
+    const validViews = ['overview', 'projects', 'experiences', 'tech-stacks', 'articles', 'contacts', 'error-scene'];
     const targetView = validViews.includes(viewName) ? viewName : 'overview';
 
     // Update Sidebar active state
@@ -437,7 +439,9 @@
         projects: 'Projects Management',
         experiences: 'Work Experience',
         'tech-stacks': 'Tech Stacks & Skills Library',
+        articles: 'Articles & Technical Writing',
         contacts: 'Contact Inquiries',
+        'error-scene': '404 Scene & Music Settings',
       };
       titleEl.textContent = titles[targetView] || 'Admin Dashboard';
     }
@@ -455,7 +459,9 @@
     if (targetView === 'projects') loadProjectsData();
     if (targetView === 'experiences') loadExperiencesData();
     if (targetView === 'tech-stacks') loadTechStacksData();
+    if (targetView === 'articles') loadArticlesData();
     if (targetView === 'contacts') loadContactsData();
+    if (targetView === 'error-scene') loadErrorSceneSettings();
   }
 
   function setupMobileSidebar() {
@@ -497,22 +503,25 @@
 
   async function loadOverviewData() {
     try {
-      const [projRes, expRes, contactRes, tsRes] = await Promise.all([
+      const [projRes, expRes, contactRes, tsRes, artRes] = await Promise.all([
         adminFetch('/api/admin/projects'),
         adminFetch('/api/admin/experiences'),
         adminFetch('/api/admin/contacts'),
         adminFetch('/api/admin/tech-stacks'),
+        adminFetch('/api/admin/articles'),
       ]);
 
       cachedProjects = projRes.data || [];
       cachedExperiences = expRes.data || [];
       cachedContacts = contactRes.data || [];
       cachedTechStacks = tsRes.data || [];
+      cachedArticles = artRes.data || [];
 
       // Update counters
       const projCountEl = document.getElementById('stat-projects-count');
       const expCountEl = document.getElementById('stat-experiences-count');
       const techStackCountEl = document.getElementById('stat-tech-stacks-count');
+      const articleCountEl = document.getElementById('stat-articles-count');
       const contactCountEl = document.getElementById('stat-contacts-count');
       const unreadCountEl = document.getElementById('stat-unread-count');
       const sidebarUnreadEl = document.getElementById('sidebar-unread-badge');
@@ -520,6 +529,7 @@
       if (projCountEl) projCountEl.textContent = cachedProjects.length;
       if (expCountEl) expCountEl.textContent = cachedExperiences.length;
       if (techStackCountEl) techStackCountEl.textContent = cachedTechStacks.length;
+      if (articleCountEl) articleCountEl.textContent = cachedArticles.length;
       if (contactCountEl) contactCountEl.textContent = cachedContacts.length;
 
       const unreadCount = cachedContacts.filter((c) => c.status === 'unread').length;
@@ -1743,6 +1753,846 @@
       showToast(err.message || 'Failed to update message status', 'error');
     }
   };
+
+  // ==========================================================================
+  // SECTION 6: ARTICLES MANAGEMENT
+  // ==========================================================================
+  let cachedArticles = [];
+
+  function setupArticlesCRUD() {
+    const addBtn = document.getElementById('btn-add-article');
+    const articleForm = document.getElementById('article-form');
+    const searchInput = document.getElementById('admin-articles-search');
+
+    if (addBtn) addBtn.addEventListener('click', openArticleModalForCreate);
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const filtered = cachedArticles.filter(
+          (a) =>
+            (a.title && a.title.toLowerCase().includes(query)) ||
+            (a.category && a.category.toLowerCase().includes(query)) ||
+            (a.tags && a.tags.toLowerCase().includes(query)) ||
+            (a.slug && a.slug.toLowerCase().includes(query))
+        );
+        renderArticlesTable(filtered);
+      });
+    }
+
+    // Utility to insert text at textarea cursor position
+    function insertAtCursor(textarea, textToInsert) {
+      if (!textarea) return;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const original = textarea.value;
+      textarea.value = original.substring(0, start) + textToInsert + original.substring(end);
+      const newPos = start + textToInsert.length;
+      textarea.selectionStart = newPos;
+      textarea.selectionEnd = newPos;
+      textarea.focus();
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    // Markdown tabs: Write vs Preview
+    const tabWrite = document.getElementById('tab-article-write');
+    const tabPreview = document.getElementById('tab-article-preview');
+    const contentTextarea = document.getElementById('article-content-input');
+    const previewPane = document.getElementById('article-markdown-preview-pane');
+
+    if (tabWrite && tabPreview && contentTextarea && previewPane) {
+      tabWrite.addEventListener('click', () => {
+        tabWrite.style.background = 'var(--accent-black)';
+        tabWrite.style.color = 'var(--text-inverse)';
+        tabPreview.style.background = 'var(--bg-card)';
+        tabPreview.style.color = 'var(--text-secondary)';
+        contentTextarea.style.display = 'block';
+        previewPane.style.display = 'none';
+      });
+
+      tabPreview.addEventListener('click', () => {
+        tabPreview.style.background = 'var(--accent-black)';
+        tabPreview.style.color = 'var(--text-inverse)';
+        tabWrite.style.background = 'var(--bg-card)';
+        tabWrite.style.color = 'var(--text-secondary)';
+        contentTextarea.style.display = 'none';
+        previewPane.style.display = 'block';
+
+        const raw = contentTextarea.value || '';
+        if (window.marked && typeof window.marked.parse === 'function') {
+          previewPane.innerHTML = window.marked.parse(raw);
+        } else {
+          previewPane.innerHTML = `<pre style="white-space: pre-wrap;">${escapeHtml(raw)}</pre>`;
+        }
+      });
+    }
+
+    // -------------------------------------------------------------
+    // Markdown Toolbar Actions
+    // -------------------------------------------------------------
+    function wrapSelection(before, after) {
+      if (!contentTextarea) return;
+      const start = contentTextarea.selectionStart;
+      const end = contentTextarea.selectionEnd;
+      const original = contentTextarea.value;
+      const selected = original.substring(start, end) || 'text';
+      const replacement = before + selected + after;
+      contentTextarea.value = original.substring(0, start) + replacement + original.substring(end);
+      contentTextarea.selectionStart = start + before.length;
+      contentTextarea.selectionEnd = start + before.length + selected.length;
+      contentTextarea.focus();
+      contentTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    const btnBold = document.getElementById('btn-toolbar-bold');
+    if (btnBold) btnBold.addEventListener('click', () => wrapSelection('**', '**'));
+
+    const btnItalic = document.getElementById('btn-toolbar-italic');
+    if (btnItalic) btnItalic.addEventListener('click', () => wrapSelection('*', '*'));
+
+    const btnH2 = document.getElementById('btn-toolbar-h2');
+    if (btnH2) btnH2.addEventListener('click', () => insertAtCursor(contentTextarea, '\n\n## Heading 2\n'));
+
+    const btnH3 = document.getElementById('btn-toolbar-h3');
+    if (btnH3) btnH3.addEventListener('click', () => insertAtCursor(contentTextarea, '\n\n### Heading 3\n'));
+
+    const btnQuote = document.getElementById('btn-toolbar-quote');
+    if (btnQuote) btnQuote.addEventListener('click', () => insertAtCursor(contentTextarea, '\n\n> Quote text here\n'));
+
+    const btnList = document.getElementById('btn-toolbar-list');
+    if (btnList) btnList.addEventListener('click', () => insertAtCursor(contentTextarea, '\n\n- Item 1\n- Item 2\n'));
+
+    const btnLink = document.getElementById('btn-toolbar-link');
+    if (btnLink) btnLink.addEventListener('click', () => insertAtCursor(contentTextarea, '[Link Title](https://example.com)'));
+
+    const btnCode = document.getElementById('btn-toolbar-code');
+    if (btnCode) btnCode.addEventListener('click', () => wrapSelection('`', '`'));
+
+    // -------------------------------------------------------------
+    // Insert Image Modal & Direct Upload Handlers
+    // -------------------------------------------------------------
+    const imgModal = document.getElementById('insert-image-modal');
+    const btnOpenImgModal = document.getElementById('btn-toolbar-img');
+    const btnCloseImgModal = document.getElementById('btn-close-insert-img');
+    const btnCancelImgModal = document.getElementById('btn-cancel-insert-img');
+    const btnConfirmImg = document.getElementById('btn-confirm-insert-img');
+
+    const tabImgUpload = document.getElementById('tab-img-upload');
+    const tabImgUrl = document.getElementById('tab-img-url');
+    const paneImgUpload = document.getElementById('pane-img-upload');
+    const paneImgUrl = document.getElementById('pane-img-url');
+
+    const imgDropzone = document.getElementById('img-dropzone');
+    const imgUploadInput = document.getElementById('img-upload-input');
+    const imgUrlInput = document.getElementById('img-url-input');
+    const imgCaptionInput = document.getElementById('img-caption-input');
+    const imgPreviewBox = document.getElementById('img-preview-box');
+    const imgPreviewElem = document.getElementById('img-preview-elem');
+    const imgPreviewStatus = document.getElementById('img-preview-status');
+
+    let currentReadyImageUrl = '';
+
+    function resetImageModal() {
+      currentReadyImageUrl = '';
+      if (imgUrlInput) imgUrlInput.value = '';
+      if (imgCaptionInput) imgCaptionInput.value = '';
+      if (imgUploadInput) imgUploadInput.value = '';
+      if (imgPreviewBox) imgPreviewBox.style.display = 'none';
+      if (imgPreviewElem) imgPreviewElem.src = '';
+      if (btnConfirmImg) btnConfirmImg.disabled = true;
+
+      // Switch to upload tab by default
+      if (tabImgUpload && tabImgUrl && paneImgUpload && paneImgUrl) {
+        tabImgUpload.classList.add('active');
+        tabImgUrl.classList.remove('active');
+        paneImgUpload.style.display = 'block';
+        paneImgUrl.style.display = 'none';
+      }
+    }
+
+    if (btnOpenImgModal && imgModal) {
+      btnOpenImgModal.addEventListener('click', () => {
+        resetImageModal();
+        imgModal.style.display = 'flex';
+      });
+    }
+
+    function closeInsertImageModal() {
+      if (imgModal) imgModal.style.display = 'none';
+    }
+
+    if (btnCloseImgModal) btnCloseImgModal.addEventListener('click', closeInsertImageModal);
+    if (btnCancelImgModal) btnCancelImgModal.addEventListener('click', closeInsertImageModal);
+
+    if (tabImgUpload && tabImgUrl) {
+      tabImgUpload.addEventListener('click', () => {
+        tabImgUpload.classList.add('active');
+        tabImgUrl.classList.remove('active');
+        paneImgUpload.style.display = 'block';
+        paneImgUrl.style.display = 'none';
+      });
+
+      tabImgUrl.addEventListener('click', () => {
+        tabImgUrl.classList.add('active');
+        tabImgUpload.classList.remove('active');
+        paneImgUpload.style.display = 'none';
+        paneImgUrl.style.display = 'block';
+        if (imgUrlInput) imgUrlInput.focus();
+      });
+    }
+
+    // Helper: Upload File to Server
+    async function uploadArticleImage(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await adminFetch('/api/admin/upload/image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.data || !res.data.url) {
+        throw new Error(res.message || 'Image upload failed');
+      }
+
+      return res.data.url;
+    }
+
+    // Dropzone Click & Change
+    if (imgDropzone && imgUploadInput) {
+      imgDropzone.addEventListener('click', () => imgUploadInput.click());
+
+      imgDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        imgDropzone.classList.add('drag-over');
+      });
+
+      imgDropzone.addEventListener('dragleave', () => {
+        imgDropzone.classList.remove('drag-over');
+      });
+
+      imgDropzone.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        imgDropzone.classList.remove('drag-over');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          await handleFileSelected(e.dataTransfer.files[0]);
+        }
+      });
+
+      imgUploadInput.addEventListener('change', async () => {
+        if (imgUploadInput.files && imgUploadInput.files[0]) {
+          await handleFileSelected(imgUploadInput.files[0]);
+        }
+      });
+    }
+
+    async function handleFileSelected(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid image file', 'error');
+        return;
+      }
+
+      const dropzoneText = document.getElementById('img-dropzone-text');
+      if (dropzoneText) dropzoneText.textContent = 'Uploading image...';
+
+      try {
+        const uploadedUrl = await uploadArticleImage(file);
+        currentReadyImageUrl = uploadedUrl;
+
+        if (imgPreviewElem) imgPreviewElem.src = uploadedUrl;
+        if (imgPreviewStatus) imgPreviewStatus.textContent = `Uploaded: ${file.name}`;
+        if (imgPreviewBox) imgPreviewBox.style.display = 'block';
+        if (btnConfirmImg) btnConfirmImg.disabled = false;
+
+        if (dropzoneText) dropzoneText.textContent = 'Click to choose another photo';
+        showToast('Image uploaded successfully', 'success');
+      } catch (err) {
+        if (dropzoneText) dropzoneText.textContent = 'Click to browse or drop photo here';
+        showToast(err.message || 'Failed to upload image', 'error');
+      }
+    }
+
+    // URL Input Change
+    if (imgUrlInput) {
+      imgUrlInput.addEventListener('input', () => {
+        const url = imgUrlInput.value.trim();
+        if (url) {
+          currentReadyImageUrl = url;
+          if (imgPreviewElem) imgPreviewElem.src = url;
+          if (imgPreviewStatus) imgPreviewStatus.textContent = 'Web image URL ready';
+          if (imgPreviewBox) imgPreviewBox.style.display = 'block';
+          if (btnConfirmImg) btnConfirmImg.disabled = false;
+        } else {
+          currentReadyImageUrl = '';
+          if (imgPreviewBox) imgPreviewBox.style.display = 'none';
+          if (btnConfirmImg) btnConfirmImg.disabled = true;
+        }
+      });
+    }
+
+    // Insert Image Confirmation Button
+    if (btnConfirmImg) {
+      btnConfirmImg.addEventListener('click', () => {
+        if (!currentReadyImageUrl) return;
+
+        const caption = (imgCaptionInput ? imgCaptionInput.value.trim() : '');
+        let markdownImage = '';
+
+        if (caption) {
+          markdownImage = `\n\n![${caption}](${currentReadyImageUrl})\n*${caption}*\n\n`;
+        } else {
+          markdownImage = `\n\n![Story Photo](${currentReadyImageUrl})\n\n`;
+        }
+
+        insertAtCursor(contentTextarea, markdownImage);
+        closeInsertImageModal();
+        showToast('Image inserted in between text!', 'success');
+      });
+    }
+
+    // -------------------------------------------------------------
+    // Drag & Drop / Clipboard Paste directly into Content Textarea
+    // -------------------------------------------------------------
+    if (contentTextarea) {
+      // Paste image from clipboard
+      contentTextarea.addEventListener('paste', async (e) => {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        for (const item of items) {
+          if (item.type.indexOf('image') !== -1) {
+            e.preventDefault();
+            const file = item.getAsFile();
+            if (!file) continue;
+
+            showToast('Uploading pasted image...', 'info');
+            try {
+              const uploadedUrl = await uploadArticleImage(file);
+              const markdown = `\n\n![Pasted Image](${uploadedUrl})\n\n`;
+              insertAtCursor(contentTextarea, markdown);
+              showToast('Pasted image uploaded & inserted at cursor!', 'success');
+            } catch (err) {
+              showToast(err.message || 'Failed to upload pasted image', 'error');
+            }
+            break;
+          }
+        }
+      });
+
+      // Drop image directly into textarea
+      contentTextarea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      contentTextarea.addEventListener('drop', async (e) => {
+        const files = e.dataTransfer?.files;
+        if (files && files[0] && files[0].type.startsWith('image/')) {
+          e.preventDefault();
+          showToast('Uploading dropped image...', 'info');
+          try {
+            const uploadedUrl = await uploadArticleImage(files[0]);
+            const markdown = `\n\n![${files[0].name.replace(/\.[^/.]+$/, '')}](${uploadedUrl})\n\n`;
+            insertAtCursor(contentTextarea, markdown);
+            showToast('Image uploaded & inserted at cursor!', 'success');
+          } catch (err) {
+            showToast(err.message || 'Failed to upload image', 'error');
+          }
+        }
+      });
+    }
+
+    if (articleForm) {
+      articleForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const saveBtn = document.getElementById('article-save-btn');
+        const id = document.getElementById('article-form-id').value;
+
+        const title = document.getElementById('article-title-input').value.trim();
+        const slug = document.getElementById('article-slug-input').value.trim();
+        const category = document.getElementById('article-category-input').value.trim();
+        const tags = document.getElementById('article-tags-input').value.trim();
+        const excerpt = document.getElementById('article-excerpt-input').value.trim();
+        const content = document.getElementById('article-content-input').value;
+        const isPublished = document.getElementById('article-published-input').checked;
+
+        if (!title || title.length < 3) {
+          showToast('Story title must be at least 3 characters', 'error');
+          return;
+        }
+
+        if (!content || content.length < 10) {
+          showToast('Story content must be at least 10 characters', 'error');
+          return;
+        }
+
+        setLoadingState(saveBtn, true, 'Saving...');
+
+        const payload = {
+          title,
+          content,
+          isPublished,
+        };
+        if (slug) payload.slug = slug;
+        if (category) payload.category = category;
+        if (tags) payload.tags = tags;
+        if (excerpt) payload.excerpt = excerpt;
+
+        try {
+          if (id) {
+            await adminFetch(`/api/admin/articles/${id}`, {
+              method: 'PUT',
+              body: JSON.stringify(payload),
+            });
+            showToast('Story updated successfully', 'success');
+          } else {
+            await adminFetch('/api/admin/articles', {
+              method: 'POST',
+              body: JSON.stringify(payload),
+            });
+            showToast('Story created successfully', 'success');
+          }
+
+          closeModal('article-modal');
+          loadArticlesData();
+          loadOverviewData();
+        } catch (err) {
+          showToast(err.message || 'Failed to save story', 'error');
+        } finally {
+          setLoadingState(saveBtn, false, 'Save Story');
+        }
+      });
+    }
+  }
+
+  function openArticleModalForCreate() {
+    document.getElementById('article-modal-title').textContent = 'Add Story';
+    document.getElementById('article-form-id').value = '';
+    document.getElementById('article-title-input').value = '';
+    document.getElementById('article-slug-input').value = '';
+    document.getElementById('article-category-input').value = 'Food & Bites';
+    document.getElementById('article-tags-input').value = '';
+    document.getElementById('article-excerpt-input').value = '';
+    document.getElementById('article-content-input').value = '';
+    document.getElementById('article-published-input').checked = true;
+
+    // Reset tabs to write
+    const tabWrite = document.getElementById('tab-article-write');
+    if (tabWrite) tabWrite.click();
+
+    openModal('article-modal');
+  }
+
+  window.openArticleModalForEdit = function (id) {
+    const article = cachedArticles.find((a) => a.id === id);
+    if (!article) return;
+
+    document.getElementById('article-modal-title').textContent = 'Edit Story';
+    document.getElementById('article-form-id').value = article.id;
+    document.getElementById('article-title-input').value = article.title || '';
+    document.getElementById('article-slug-input').value = article.slug || '';
+    document.getElementById('article-category-input').value = article.category || 'Food & Bites';
+    document.getElementById('article-tags-input').value = article.tags || '';
+    document.getElementById('article-excerpt-input').value = article.excerpt || '';
+    document.getElementById('article-content-input').value = article.content || '';
+    document.getElementById('article-published-input').checked = Boolean(article.isPublished);
+
+    // Reset tabs to write
+    const tabWrite = document.getElementById('tab-article-write');
+    if (tabWrite) tabWrite.click();
+
+    openModal('article-modal');
+  };
+
+  window.toggleArticlePublishStatus = async function (id) {
+    try {
+      const res = await adminFetch(`/api/admin/articles/${id}/toggle-publish`, {
+        method: 'PATCH',
+      });
+      showToast(res.message || 'Article publish status updated', 'success');
+      loadArticlesData();
+      loadOverviewData();
+    } catch (err) {
+      showToast(err.message || 'Failed to toggle publish status', 'error');
+    }
+  };
+
+  window.confirmDeleteArticle = function (id, title) {
+    showConfirmDelete(
+      'Delete Article',
+      `Are you sure you want to permanently delete "${title}"? This cannot be undone.`,
+      async () => {
+        try {
+          await adminFetch(`/api/admin/articles/${id}`, { method: 'DELETE' });
+          showToast('Article deleted successfully', 'success');
+          loadArticlesData();
+          loadOverviewData();
+        } catch (err) {
+          showToast(err.message || 'Failed to delete article', 'error');
+        }
+      }
+    );
+  };
+
+  async function loadArticlesData() {
+    const tbody = document.getElementById('articles-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 2.5rem;">
+          <div class="skeleton" style="height: 24px; margin-bottom: 0.5rem;"></div>
+          <div class="skeleton" style="height: 24px;"></div>
+        </td>
+      </tr>
+    `;
+
+    try {
+      const res = await adminFetch('/api/admin/articles');
+      cachedArticles = res.data || [];
+      renderArticlesTable(cachedArticles);
+    } catch (err) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 2rem; color: var(--accent-rose);">
+            ${escapeHtml(err.message || 'Failed to load articles')}
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function renderArticlesTable(articlesList) {
+    const tbody = document.getElementById('articles-tbody');
+    if (!tbody) return;
+
+    if (!articlesList || articlesList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 3rem 1.5rem; color: var(--text-muted);">
+            No articles found. Click <strong>"New Article"</strong> to compose your first post.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = articlesList
+      .map((a) => {
+        const isPub = Boolean(a.isPublished);
+        const statusBadge = isPub
+          ? `<span class="status-badge read" style="background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3);">Published</span>`
+          : `<span class="status-badge unread" style="background: rgba(161, 161, 170, 0.15); color: var(--text-muted); border: 1px solid rgba(161, 161, 170, 0.3);">Draft</span>`;
+
+        const pubDate = formatDate(a.publishedAt || a.createdAt);
+
+        return `
+          <tr>
+            <td>
+              <div style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.2rem;">
+                ${escapeHtml(a.title)}
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted);">
+                /blog/${escapeHtml(a.slug)}
+              </div>
+            </td>
+            <td>
+              <span class="tech-tag" style="font-size: 0.74rem;">${escapeHtml(a.category || 'Food & Bites')}</span>
+            </td>
+            <td>
+              ${statusBadge}
+            </td>
+            <td>
+              <span style="font-size: 0.82rem; color: var(--text-muted);">${escapeHtml(pubDate)}</span>
+            </td>
+            <td style="text-align: right;">
+              <div style="display: inline-flex; gap: 0.35rem;">
+                <a href="/blog/${encodeURIComponent(a.slug)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" title="View live article">
+                  Live ↗
+                </a>
+                <button class="btn btn-secondary btn-sm" onclick="window.toggleArticlePublishStatus(${a.id})" title="${isPub ? 'Unpublish to draft' : 'Publish live'}">
+                  ${isPub ? 'Unpublish' : 'Publish'}
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="window.openArticleModalForEdit(${a.id})" title="Edit article">
+                  Edit
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="window.confirmDeleteArticle(${a.id}, '${escapeHtml(a.title.replace(/'/g, "\\'"))}')" title="Delete article">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      })
+      .join('');
+  }
+
+  // ==========================================================================
+  // 404 MUSIC SCENE SETTINGS CONTROLLER
+  // ==========================================================================
+
+  function parseYouTubeVideoId(input) {
+    if (!input) return '';
+    const trimmed = String(input).trim();
+    const match = trimmed.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (match && match[1]) {
+      return match[1];
+    }
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+      return trimmed;
+    }
+    return trimmed;
+  }
+
+  let errorSceneIframeDebounceTimer = null;
+
+  function updateErrorScenePreviewFromForm() {
+    const headline = document.getElementById('error-scene-headline')?.value.trim() || 'Wrong Scene?';
+    const ytUrl = document.getElementById('error-scene-yt-url')?.value.trim() || '';
+    const artist = document.getElementById('error-scene-artist')?.value.trim() || 'eaJ';
+    const song = document.getElementById('error-scene-song')?.value.trim() || 'pause';
+    const lyric = document.getElementById('error-scene-lyric')?.value.trim() || 'Scene out of a movie, I hope it never ends.';
+    const message = document.getElementById('error-scene-message')?.value.trim() || '';
+    const hint = document.getElementById('error-scene-hint')?.value.trim() || '';
+    const btnText = document.getElementById('error-scene-btn-text')?.value.trim() || 'Play';
+
+    const videoId = parseYouTubeVideoId(ytUrl) || 'N2kz9EOtIPQ';
+
+    const previewTitle = document.getElementById('live-preview-title');
+    const previewLyric = document.getElementById('live-preview-lyric');
+    const previewMessage = document.getElementById('live-preview-message');
+    const previewHint = document.getElementById('live-preview-hint');
+    const previewBtnLabel = document.getElementById('live-preview-btn-label');
+    const previewBadge = document.getElementById('preview-video-id-badge');
+    const previewIframe = document.getElementById('live-preview-iframe');
+    const facadeCover = document.getElementById('admin-facade-cover');
+    const facadeImg = document.getElementById('admin-facade-img');
+
+    if (previewTitle) previewTitle.textContent = headline;
+    if (previewBadge) previewBadge.textContent = `ID: ${videoId}`;
+    if (previewLyric) {
+      previewLyric.innerHTML = `${escapeHtml(artist)} sings, <em>“${escapeHtml(lyric)}”</em>`;
+    }
+    if (previewMessage) previewMessage.textContent = message;
+    if (previewHint) {
+      previewHint.textContent = hint;
+      previewHint.style.display = hint ? '' : 'none';
+    }
+    if (previewBtnLabel) previewBtnLabel.textContent = btnText;
+
+    if (facadeImg) {
+      facadeImg.src = `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/maxresdefault.jpg`;
+      facadeImg.alt = `${artist} - ${song}`;
+      facadeImg.onerror = function () {
+        if (!this.src.includes('hqdefault')) {
+          this.src = `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+        }
+      };
+    }
+
+    if (facadeCover && !facadeCover.dataset.bound) {
+      facadeCover.dataset.bound = 'true';
+      facadeCover.addEventListener('click', () => {
+        const currentYt = document.getElementById('error-scene-yt-url')?.value.trim() || '';
+        const curArtist = document.getElementById('error-scene-artist')?.value.trim() || 'eaJ';
+        const curSong = document.getElementById('error-scene-song')?.value.trim() || 'pause';
+        const curId = parseYouTubeVideoId(currentYt) || 'N2kz9EOtIPQ';
+        facadeCover.classList.add('playing');
+        if (previewIframe) {
+          previewIframe.style.display = 'block';
+          previewIframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(curId)}?autoplay=1&rel=0`;
+          previewIframe.title = `${curArtist} - ${curSong}`;
+        }
+      });
+    }
+
+    if (previewIframe && previewIframe.style.display !== 'none') {
+      clearTimeout(errorSceneIframeDebounceTimer);
+      errorSceneIframeDebounceTimer = setTimeout(() => {
+        const targetSrc = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0`;
+        if (!previewIframe.src.includes(videoId)) {
+          previewIframe.src = targetSrc;
+          previewIframe.title = `${artist} - ${song}`;
+        }
+      }, 350);
+    }
+  }
+
+  async function loadErrorSceneSettings() {
+    try {
+      const res = await adminFetch('/api/admin/error-scene');
+      if (res && res.status === 'success' && res.data) {
+        const scene = res.data;
+        const headlineEl = document.getElementById('error-scene-headline');
+        const ytUrlEl = document.getElementById('error-scene-yt-url');
+        const artistEl = document.getElementById('error-scene-artist');
+        const songEl = document.getElementById('error-scene-song');
+        const lyricEl = document.getElementById('error-scene-lyric');
+        const messageEl = document.getElementById('error-scene-message');
+        const hintEl = document.getElementById('error-scene-hint');
+        const btnTextEl = document.getElementById('error-scene-btn-text');
+        const btnUrlEl = document.getElementById('error-scene-btn-url');
+        const isActiveEl = document.getElementById('error-scene-is-active');
+
+        if (headlineEl) headlineEl.value = scene.headline || 'Wrong Scene?';
+        if (ytUrlEl) ytUrlEl.value = scene.youtubeUrl || (scene.youtubeVideoId ? `https://www.youtube.com/watch?v=${scene.youtubeVideoId}` : '');
+        if (artistEl) artistEl.value = scene.artist || '';
+        if (songEl) songEl.value = scene.songTitle || '';
+        if (lyricEl) lyricEl.value = scene.lyricQuote || '';
+        if (messageEl) messageEl.value = scene.message || '';
+        if (hintEl) hintEl.value = scene.actionHint || '';
+        if (btnTextEl) btnTextEl.value = scene.buttonText || 'Play';
+        if (btnUrlEl) btnUrlEl.value = scene.buttonUrl || '/';
+        if (isActiveEl) isActiveEl.checked = scene.isActive !== false;
+
+        updateErrorScenePreviewFromForm();
+      }
+    } catch (err) {
+      console.warn('Failed to load error scene settings:', err);
+    }
+  }
+
+  function setupErrorSceneSettings() {
+    const saveBtn = document.getElementById('btn-save-error-scene');
+    const resetBtn = document.getElementById('btn-reset-error-scene');
+
+    const inputs = [
+      'error-scene-headline',
+      'error-scene-yt-url',
+      'error-scene-artist',
+      'error-scene-song',
+      'error-scene-lyric',
+      'error-scene-message',
+      'error-scene-hint',
+      'error-scene-btn-text',
+      'error-scene-btn-url',
+    ];
+
+    inputs.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', updateErrorScenePreviewFromForm);
+      }
+    });
+
+    const activeEl = document.getElementById('error-scene-is-active');
+    if (activeEl) {
+      activeEl.addEventListener('change', updateErrorScenePreviewFromForm);
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        const headlineEl = document.getElementById('error-scene-headline');
+        const ytUrlEl = document.getElementById('error-scene-yt-url');
+        const artistEl = document.getElementById('error-scene-artist');
+        const songEl = document.getElementById('error-scene-song');
+        const lyricEl = document.getElementById('error-scene-lyric');
+        const messageEl = document.getElementById('error-scene-message');
+        const hintEl = document.getElementById('error-scene-hint');
+        const btnTextEl = document.getElementById('error-scene-btn-text');
+        const btnUrlEl = document.getElementById('error-scene-btn-url');
+        const isActiveEl = document.getElementById('error-scene-is-active');
+
+        if (headlineEl) headlineEl.value = 'Wrong Scene?';
+        if (ytUrlEl) ytUrlEl.value = 'https://www.youtube.com/watch?v=N2kz9EOtIPQ';
+        if (artistEl) artistEl.value = 'eaJ';
+        if (songEl) songEl.value = 'pause';
+        if (lyricEl) lyricEl.value = 'Scene out of a movie, I hope it never ends.';
+        if (messageEl) messageEl.value = 'He wishes that beautiful scene would never end. You, on the other hand, seem to have stumbled into a deleted scene.';
+        if (hintEl) hintEl.value = "Don't worry, just hit the button below to 'Play' your journey again from the homepage.";
+        if (btnTextEl) btnTextEl.value = 'Play';
+        if (btnUrlEl) btnUrlEl.value = '/';
+        if (isActiveEl) isActiveEl.checked = true;
+
+        const facadeCover = document.getElementById('admin-facade-cover');
+        const previewIframe = document.getElementById('live-preview-iframe');
+        if (facadeCover) facadeCover.classList.remove('playing');
+        if (previewIframe) {
+          previewIframe.style.display = 'none';
+          previewIframe.src = '';
+        }
+
+        updateErrorScenePreviewFromForm();
+        showToast('Reset form to eaJ - pause defaults (Click Save Changes to apply).', 'info');
+      });
+    }
+
+    if (saveBtn) {
+      saveBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const headline = document.getElementById('error-scene-headline')?.value.trim();
+        const ytUrl = document.getElementById('error-scene-yt-url')?.value.trim();
+        const artist = document.getElementById('error-scene-artist')?.value.trim();
+        const song = document.getElementById('error-scene-song')?.value.trim();
+        const lyric = document.getElementById('error-scene-lyric')?.value.trim();
+        const message = document.getElementById('error-scene-message')?.value.trim();
+        const hint = document.getElementById('error-scene-hint')?.value.trim();
+        const btnText = document.getElementById('error-scene-btn-text')?.value.trim() || 'Play';
+        const btnUrl = document.getElementById('error-scene-btn-url')?.value.trim() || '/';
+        const isActive = document.getElementById('error-scene-is-active')?.checked ?? true;
+
+        if (!ytUrl) {
+          showToast('Please enter a YouTube Video URL or ID.', 'error');
+          document.getElementById('error-scene-yt-url')?.focus();
+          return;
+        }
+        if (!artist) {
+          showToast('Please enter the Artist name.', 'error');
+          document.getElementById('error-scene-artist')?.focus();
+          return;
+        }
+        if (!song) {
+          showToast('Please enter the Song title.', 'error');
+          document.getElementById('error-scene-song')?.focus();
+          return;
+        }
+        if (!lyric) {
+          showToast('Please enter a lyrical quote.', 'error');
+          document.getElementById('error-scene-lyric')?.focus();
+          return;
+        }
+        if (!message) {
+          showToast('Please enter the story / narrative message.', 'error');
+          document.getElementById('error-scene-message')?.focus();
+          return;
+        }
+
+        setLoadingState(saveBtn, true, 'Saving Scene...');
+
+        try {
+          const payload = {
+            headline: headline || 'Wrong Scene?',
+            youtubeUrl: ytUrl,
+            artist,
+            songTitle: song,
+            lyricQuote: lyric,
+            message,
+            actionHint: hint,
+            buttonText: btnText,
+            buttonUrl: btnUrl,
+            isActive: Boolean(isActive),
+          };
+
+          const res = await adminFetch('/api/admin/error-scene', {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+          });
+
+          if (res && res.status === 'success') {
+            showToast('404 Scene updated successfully! ✨', 'success');
+            updateErrorScenePreviewFromForm();
+          } else {
+            showToast(res?.message || 'Failed to update 404 scene.', 'error');
+          }
+        } catch (err) {
+          showToast(err?.message || 'Error updating 404 scene.', 'error');
+        } finally {
+          setLoadingState(saveBtn, false, 'Save Changes');
+        }
+      });
+    }
+  }
 
   // Expose utilities if needed for test verification in global scope
   window.__adminDashboard = {

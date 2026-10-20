@@ -115,6 +115,72 @@ export async function runMigrationV2() {
     );
   `);
 
+  // Articles / Blog
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS articles (
+      id int AUTO_INCREMENT NOT NULL,
+      title varchar(255) NOT NULL,
+      slug varchar(191) NOT NULL,
+      excerpt text NOT NULL,
+      content text NOT NULL,
+      category varchar(100) NOT NULL DEFAULT 'QA & Testing',
+      tags varchar(255),
+      read_time varchar(50) NOT NULL DEFAULT '3 min read',
+      cover_image_url varchar(255),
+      is_published boolean NOT NULL DEFAULT true,
+      published_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY articles_slug_unique (slug)
+    );
+  `);
+
+  // Error Scenes (404 Music Scene Settings)
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS error_scenes (
+      id int AUTO_INCREMENT NOT NULL,
+      headline varchar(255) NOT NULL DEFAULT 'Wrong Scene?',
+      youtube_url varchar(500) NOT NULL DEFAULT 'https://www.youtube.com/watch?v=N2kz9EOtIPQ',
+      youtube_video_id varchar(100) NOT NULL DEFAULT 'N2kz9EOtIPQ',
+      artist varchar(150) NOT NULL DEFAULT 'eaJ',
+      song_title varchar(150) NOT NULL DEFAULT 'pause',
+      lyric_quote text NOT NULL,
+      message text NOT NULL,
+      action_hint text NOT NULL,
+      button_text varchar(50) NOT NULL DEFAULT 'Play',
+      button_url varchar(255) NOT NULL DEFAULT '/',
+      is_active boolean NOT NULL DEFAULT true,
+      created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    );
+  `);
+
+  // Seed default 404 scene if table is empty
+  const [existingScenes]: any = await connection.query(`SELECT id FROM error_scenes LIMIT 1;`);
+  if (!existingScenes || existingScenes.length === 0) {
+    await connection.query(`
+      INSERT INTO error_scenes (
+        headline, youtube_url, youtube_video_id, artist, song_title,
+        lyric_quote, message, action_hint, button_text, button_url, is_active
+      ) VALUES (
+        'Wrong Scene?',
+        'https://www.youtube.com/watch?v=N2kz9EOtIPQ',
+        'N2kz9EOtIPQ',
+        'eaJ',
+        'pause',
+        'Scene out of a movie, I hope it never ends.',
+        'He wishes that beautiful scene would never end. You, on the other hand, seem to have stumbled into a deleted scene.',
+        'Don\\'t worry, just hit the button below to \\'Play\\' your journey again from the homepage.',
+        'Play',
+        '/',
+        true
+      );
+    `);
+    console.log('✅ Seeded default 404 music scene (eaJ - pause)');
+  }
+
   console.log(`✅ All tables created and verified in ${dbName}`);
   await connection.end();
 }

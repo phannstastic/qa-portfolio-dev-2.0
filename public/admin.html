@@ -51,10 +51,18 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
         <span>Tech Stacks</span>
       </a>
+      <a href="#articles" class="sidebar-link" data-view="articles" id="nav-articles">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span>Articles</span>
+      </a>
       <a href="#contacts" class="sidebar-link" data-view="contacts" id="nav-contacts">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
         <span>Messages</span>
         <span id="sidebar-unread-badge" class="sidebar-badge" style="display: none;">0</span>
+      </a>
+      <a href="#error-scene" class="sidebar-link" data-view="error-scene" id="nav-error-scene">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+        <span>404 Scene</span>
       </a>
     </nav>
 
@@ -140,6 +148,16 @@
             </div>
             <div class="stat-icon emerald">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Articles</div>
+              <div id="stat-articles-count" class="stat-value">0</div>
+            </div>
+            <div class="stat-icon amber">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
             </div>
           </div>
 
@@ -332,6 +350,209 @@
                 <!-- Populated dynamically -->
               </tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           6. Articles / Blog View
+           ======================================================== -->
+      <section id="view-articles" class="admin-view">
+        <div class="table-card">
+          <div class="table-header-row">
+            <div>
+              <h2 class="table-title">Stories, Reviews &amp; Articles</h2>
+              <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Create, edit, and publish food reviews, travel notes, lifestyle stories, tech insights, and blog posts.
+              </p>
+            </div>
+            <div class="table-actions">
+              <input type="text" id="admin-articles-search" class="form-input" placeholder="Search stories..." style="width: 200px; padding: 0.45rem 0.75rem; font-size: 0.84rem;">
+              <button id="btn-add-article" class="btn btn-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>New Story</span>
+              </button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Title &amp; Slug</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Published</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="articles-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           7. 404 Music Scene View
+           ======================================================== -->
+      <section id="view-error-scene" class="admin-view">
+        <div class="error-scene-admin-container">
+          <!-- Card Header & Actions -->
+          <div class="table-card" style="margin-bottom: 1.5rem;">
+            <div class="table-header-row" style="flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h2 class="table-title">404 Music Scene Customizer</h2>
+                <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  Customize the musical video, lyrics quote, and aesthetic narrative shown whenever a visitor hits an unknown link on your website.
+                </p>
+              </div>
+              <div class="table-actions" style="display: flex; gap: 0.5rem; align-items: center;">
+                <a href="/404" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" id="btn-preview-404-tab">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  <span>Open 404 Page</span>
+                </a>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-error-scene">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+                  <span>Reset to Default</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="btn-save-error-scene">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                  <span>Save Changes</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Two-column Admin Grid: Form on Left, Live Preview on Right -->
+          <div class="error-scene-grid">
+            <!-- Left Column: Settings Form -->
+            <div class="table-card error-scene-form-card">
+              <form id="error-scene-form" novalidate>
+                <div class="form-group">
+                  <label for="error-scene-headline" class="form-label">Headline / Title <span class="req">*</span></label>
+                  <input type="text" id="error-scene-headline" class="form-input" required maxlength="100" placeholder="e.g. Wrong Scene?">
+                  <div class="form-help">Large title displayed above the video stage.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="error-scene-yt-url" class="form-label">YouTube Video URL or ID <span class="req">*</span></label>
+                  <input type="text" id="error-scene-yt-url" class="form-input" required placeholder="https://www.youtube.com/watch?v=N2kz9EOtIPQ or youtu.be link">
+                  <div class="form-help">Auto-detects YouTube watch URLs, shortlinks (youtu.be), embed links, or raw 11-char video IDs.</div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="error-scene-artist" class="form-label">Artist / Performer <span class="req">*</span></label>
+                    <input type="text" id="error-scene-artist" class="form-input" required maxlength="100" placeholder="e.g. eaJ">
+                  </div>
+                  <div class="form-group">
+                    <label for="error-scene-song" class="form-label">Song Title <span class="req">*</span></label>
+                    <input type="text" id="error-scene-song" class="form-input" required maxlength="150" placeholder="e.g. pause">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="error-scene-lyric" class="form-label">Lyrical Quote <span class="req">*</span></label>
+                  <input type="text" id="error-scene-lyric" class="form-input" required maxlength="255" placeholder="e.g. Scene out of a movie, I hope it never ends.">
+                  <div class="form-help">Quote displayed right under the video (rendered as: <em>Artist</em> sings, “<em>Quote</em>”).</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="error-scene-message" class="form-label">Story / Narrative Message <span class="req">*</span></label>
+                  <textarea id="error-scene-message" class="form-textarea" rows="3" required placeholder="e.g. He wishes that beautiful scene would never end. You, on the other hand, seem to have stumbled into a deleted scene."></textarea>
+                  <div class="form-help">Playful narrative connecting the song lyrics to the lost 404 experience.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="error-scene-hint" class="form-label">Action Hint</label>
+                  <input type="text" id="error-scene-hint" class="form-input" maxlength="255" placeholder="e.g. Don't worry, just hit the button below to 'Play' your journey again from the homepage.">
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="error-scene-btn-text" class="form-label">Button Text</label>
+                    <input type="text" id="error-scene-btn-text" class="form-input" maxlength="50" placeholder="e.g. Play">
+                  </div>
+                  <div class="form-group">
+                    <label for="error-scene-btn-url" class="form-label">Button Target Link</label>
+                    <input type="text" id="error-scene-btn-url" class="form-input" maxlength="255" placeholder="e.g. /">
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--admin-border-subtle);">
+                  <label class="form-check" style="cursor: pointer;">
+                    <input type="checkbox" id="error-scene-is-active" class="form-check-input" checked>
+                    <span><strong>Active</strong> (Use this music scene on the live 404 page)</span>
+                  </label>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right Column: Live Interactive Preview -->
+            <div class="table-card error-scene-preview-card">
+              <div class="preview-header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span class="preview-pulse-dot"></span>
+                  <span style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--admin-accent-cyan);">Live 404 Preview</span>
+                </div>
+                <span id="preview-video-id-badge" class="badge" style="background: rgba(56, 189, 248, 0.12); color: var(--admin-accent-cyan); font-family: monospace; font-size: 0.72rem;">ID: N2kz9EOtIPQ</span>
+              </div>
+
+              <!-- Preview Simulation Frame -->
+              <div class="scene-preview-frame">
+                <div class="preview-stage-wrap">
+                  <h2 id="live-preview-title" class="preview-headline">Wrong Scene?</h2>
+
+                  <div class="preview-video-box" id="admin-preview-video-box">
+                    <div class="scene-facade-cover" id="admin-facade-cover" role="button" tabindex="0" aria-label="Preview Music Video">
+                      <img
+                        id="admin-facade-img"
+                        class="scene-facade-img"
+                        src="https://i.ytimg.com/vi/N2kz9EOtIPQ/maxresdefault.jpg"
+                        alt="eaJ - pause"
+                        onerror="if(!this.src.includes('hqdefault')) this.src='https://i.ytimg.com/vi/N2kz9EOtIPQ/hqdefault.jpg';"
+                      />
+                      <div class="scene-facade-overlay"></div>
+                      <div class="scene-facade-play-btn" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                      </div>
+                    </div>
+                    <iframe
+                      id="live-preview-iframe"
+                      style="display:none;"
+                      src=""
+                      title="eaJ - pause"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen>
+                    </iframe>
+                  </div>
+
+                  <div class="preview-narrative-box">
+                    <p id="live-preview-lyric" class="preview-lyric-text">
+                      eaJ sings, <em>“Scene out of a movie, I hope it never ends.”</em>
+                    </p>
+                    <p id="live-preview-message" class="preview-message-text">
+                      He wishes that beautiful scene would never end. You, on the other hand, seem to have stumbled into a deleted scene.
+                    </p>
+                    <p id="live-preview-hint" class="preview-hint-text">
+                      Don't worry, just hit the button below to 'Play' your journey again from the homepage.
+                    </p>
+                  </div>
+
+                  <div class="preview-action-box">
+                    <div id="live-preview-btn" class="preview-play-btn">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      <span id="live-preview-btn-label">Play</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -703,6 +924,139 @@
     </div>
   </div>
 
+  <!-- Article Form Modal (Create / Edit) -->
+  <div id="article-modal" class="modal-backdrop">
+    <div class="modal-dialog" style="max-width: 860px;">
+      <div class="modal-header">
+        <h3 id="article-modal-title" class="modal-title">Add Story</h3>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form id="article-form" novalidate>
+        <input type="hidden" id="article-form-id" value="">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+              <label for="article-title-input" class="form-label">Story / Article Title <span class="req">*</span></label>
+              <input type="text" id="article-title-input" class="form-input" required maxlength="255" placeholder="e.g. Berburu Matcha &amp; Artisan Gelato di Akhir Pekan">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="article-category-input" class="form-label">Category</label>
+              <input type="text" id="article-category-input" class="form-input" placeholder="e.g. Food &amp; Bites, Travel &amp; Places, Life &amp; Journal, Tech &amp; Notes" value="Food &amp; Bites">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="article-slug-input" class="form-label">Custom Slug (Auto-generated if empty)</label>
+            <input type="text" id="article-slug-input" class="form-input" maxlength="191" placeholder="e.g. berburu-matcha-dan-artisan-gelato">
+          </div>
+
+          <div class="form-group">
+            <label for="article-tags-input" class="form-label">Tags (Comma-separated)</label>
+            <input type="text" id="article-tags-input" class="form-input" placeholder="e.g. Gelato, Matcha, Food Review, Weekend, Chill Spot, Notes">
+          </div>
+
+          <div class="form-group">
+            <label for="article-excerpt-input" class="form-label">Excerpt / Short Summary</label>
+            <textarea id="article-excerpt-input" class="form-textarea" rows="2" placeholder="Brief summary for cards and search..."></textarea>
+          </div>
+
+          <!-- Markdown Content Editor with Live Preview & Image Tools -->
+          <div class="form-group">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+              <label for="article-content-input" class="form-label" style="margin: 0;">Story Content (Markdown) <span class="req">*</span></label>
+              <div style="display: flex; gap: 0.25rem;">
+                <button type="button" id="tab-article-write" class="btn btn-secondary" style="padding: 0.2rem 0.65rem; font-size: 0.76rem; background: var(--accent-black); color: var(--text-inverse);">Write</button>
+                <button type="button" id="tab-article-preview" class="btn btn-secondary" style="padding: 0.2rem 0.65rem; font-size: 0.76rem;">Preview</button>
+              </div>
+            </div>
+
+            <!-- Markdown Toolbar -->
+            <div class="markdown-editor-toolbar">
+              <button type="button" id="btn-toolbar-img" class="editor-toolbar-btn btn-toolbar-highlight" title="Insert image in middle of text (Upload from device or Web URL)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span>Add Image</span>
+              </button>
+              <span class="editor-toolbar-sep"></span>
+              <button type="button" id="btn-toolbar-bold" class="editor-toolbar-btn" title="Bold text"><strong>B</strong></button>
+              <button type="button" id="btn-toolbar-italic" class="editor-toolbar-btn" title="Italic text"><em>I</em></button>
+              <button type="button" id="btn-toolbar-h2" class="editor-toolbar-btn" title="Heading 2">H2</button>
+              <button type="button" id="btn-toolbar-h3" class="editor-toolbar-btn" title="Heading 3">H3</button>
+              <button type="button" id="btn-toolbar-quote" class="editor-toolbar-btn" title="Quote block">&ldquo; Quote</button>
+              <button type="button" id="btn-toolbar-list" class="editor-toolbar-btn" title="Bullet list">&bull; List</button>
+              <button type="button" id="btn-toolbar-link" class="editor-toolbar-btn" title="Insert Link">Link</button>
+              <button type="button" id="btn-toolbar-code" class="editor-toolbar-btn" title="Code snippet">&lt;/&gt; Code</button>
+            </div>
+
+            <textarea id="article-content-input" class="form-textarea" rows="13" style="font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.6; border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;" placeholder="Write your story in Markdown here... Click 'Add Image' to insert photos in between text, or drag &amp; drop / paste images directly!" required></textarea>
+            
+            <div id="article-markdown-preview-pane" class="article-markdown-body" style="display: none; min-height: 250px; max-height: 420px; overflow-y: auto; padding: 1.25rem; border: 1px solid var(--border-medium); border-radius: var(--radius-sm); background: var(--bg-card);"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" id="article-published-input" class="form-check-input" checked>
+              <span>Publish immediately (visible to public on /blog)</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" id="article-save-btn" class="btn btn-primary">Save Story</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Insert Image Modal (Upload from Device or Paste URL) -->
+  <div id="insert-image-modal" class="modal-backdrop" style="z-index: 1060; display: none;">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Insert Image into Story</h3>
+        <button type="button" class="modal-close-btn" id="btn-close-insert-img">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-pill-group" style="margin-bottom: 1.25rem;">
+          <button type="button" id="tab-img-upload" class="tab-pill-btn active">Upload from Device</button>
+          <button type="button" id="tab-img-url" class="tab-pill-btn">Paste Image URL</button>
+        </div>
+
+        <!-- Pane 1: File Upload -->
+        <div id="pane-img-upload">
+          <div id="img-dropzone" class="img-dropzone-box">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--admin-accent-cyan); margin-bottom: 0.5rem;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <p id="img-dropzone-text" style="font-size: 0.88rem; font-weight: 600; color: var(--admin-text-primary); margin: 0 0 0.25rem;">Click to browse or drop photo here</p>
+            <p style="font-size: 0.75rem; color: var(--admin-text-muted); margin: 0;">PNG, JPG, WEBP, GIF, SVG (up to 10MB)</p>
+            <input type="file" id="img-upload-input" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" style="display: none;">
+          </div>
+        </div>
+
+        <!-- Pane 2: URL Input -->
+        <div id="pane-img-url" style="display: none;">
+          <div class="form-group">
+            <label for="img-url-input" class="form-label">Image Web URL <span class="req">*</span></label>
+            <input type="url" id="img-url-input" class="form-input" placeholder="https://images.unsplash.com/... or /images/articles/...">
+          </div>
+        </div>
+
+        <!-- Caption field -->
+        <div class="form-group" style="margin-top: 1rem;">
+          <label for="img-caption-input" class="form-label">Caption / Description (Optional)</label>
+          <input type="text" id="img-caption-input" class="form-input" placeholder="e.g. Suasana kafe yang tenang atau Review matcha gelato">
+        </div>
+
+        <!-- Image Preview Box -->
+        <div id="img-preview-box" style="display: none; margin-top: 1rem; border-radius: var(--admin-radius-sm); overflow: hidden; border: 1px solid var(--admin-border); text-align: center; background: var(--admin-bg-input); padding: 0.65rem;">
+          <img id="img-preview-elem" src="" alt="Preview" style="max-height: 180px; max-width: 100%; object-fit: contain; border-radius: var(--admin-radius-sm);">
+          <p id="img-preview-status" style="font-size: 0.76rem; color: var(--admin-text-muted); margin-top: 0.35rem;"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-insert-img">Cancel</button>
+        <button type="button" id="btn-confirm-insert-img" class="btn btn-primary" disabled>Insert into Story</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Generic Delete Confirmation Modal -->
   <div id="confirm-modal" class="modal-backdrop">
     <div class="modal-dialog" style="max-width: 480px;">
@@ -724,6 +1078,9 @@
 
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Markdown Renderer for Admin Preview -->
+  <script src="/js/vendor/marked.min.js"></script>
 
   <!-- Admin Application Script -->
   <script src="/js/admin.js"></script>

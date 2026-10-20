@@ -1,7 +1,8 @@
 import { Elysia, t } from 'elysia';
 import { eq, and, desc, asc, ne } from 'drizzle-orm';
-import { createDbConnection, users, projects, experiences, contacts, techStacks } from '../db';
+import { createDbConnection, users, projects, experiences, contacts, techStacks, articles, errorScenes } from '../db';
 import { verifyAuthToken, type AuthTokenPayload } from '../utils/jwt';
+import { DEFAULT_ERROR_SCENE } from './public';
 
 export interface AdminRouteOptions {
   db?: any;
@@ -14,6 +15,25 @@ export function generateSlug(text: string): string {
     .trim()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+export function calculateReadTime(text: string): string {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(words / 200));
+  return `${minutes} min read`;
+}
+
+export function extractYouTubeVideoId(input: string): string {
+  if (!input) return '';
+  const trimmed = input.trim();
+  const match = trimmed.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (match && match[1]) {
+    return match[1];
+  }
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+    return trimmed;
+  }
+  return trimmed;
 }
 
 /**
@@ -1202,72 +1222,134 @@ export const createAdminRoutes = (options?: AdminRouteOptions) => {
     // 4. Admin Uploads (/api/admin/upload/certificate)
     // =============================================================
     .group('/upload', (uploadGroup) =>
-      uploadGroup.post(
-        '/certificate',
-        async ({ body, set }) => {
-          try {
-            const file = (body as any)?.file;
-            if (!file) {
-              set.status = 400;
+      uploadGroup
+        .post(
+          '/certificate',
+          async ({ body, set }) => {
+            try {
+              const file = (body as any)?.file;
+              if (!file) {
+                set.status = 400;
+                return {
+                  status: 'error',
+                  message: 'No certificate file provided or invalid file payload.',
+                };
+              }
+
+              const fileName = file.name || 'certificate.pdf';
+              const ext = fileName.split('.').pop()?.toLowerCase() || '';
+              const allowedExts = ['pdf', 'png', 'jpg', 'jpeg', 'webp'];
+              if (!allowedExts.includes(ext)) {
+                set.status = 400;
+                return {
+                  status: 'error',
+                  message: 'Invalid file format. Allowed formats: PDF and images (.png, .jpg, .jpeg, .webp).',
+                };
+              }
+
+              const isPdf = ext === 'pdf';
+              const type = isPdf ? 'pdf' : 'image';
+              const cleanBase = fileName.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
+              const uniqueName = `${Date.now()}-${cleanBase}`;
+              const targetDir = isPdf ? 'public/docs/certificates' : 'public/images/certificates';
+
+              // Ensure destination directory exists and write file
+              await Bun.write(`${targetDir}/.keep`, '');
+              const targetPath = `${targetDir}/${uniqueName}`;
+              await Bun.write(targetPath, file);
+
+              const publicUrl = isPdf
+                ? `/docs/certificates/${uniqueName}`
+                : `/images/certificates/${uniqueName}`;
+
+              return {
+                status: 'success',
+                message: 'Certificate uploaded successfully',
+                data: {
+                  url: publicUrl,
+                  type,
+                  fileName: uniqueName,
+                },
+              };
+            } catch (err: any) {
+              console.error('❌ Error uploading certificate:', err?.message || err);
+              set.status = 500;
               return {
                 status: 'error',
-                message: 'No certificate file provided or invalid file payload.',
+                message: 'Failed to upload certificate file',
               };
             }
-
-            const fileName = file.name || 'certificate.pdf';
-            const ext = fileName.split('.').pop()?.toLowerCase() || '';
-            const allowedExts = ['pdf', 'png', 'jpg', 'jpeg', 'webp'];
-            if (!allowedExts.includes(ext)) {
-              set.status = 400;
-              return {
-                status: 'error',
-                message: 'Invalid file format. Allowed formats: PDF and images (.png, .jpg, .jpeg, .webp).',
-              };
-            }
-
-            const isPdf = ext === 'pdf';
-            const type = isPdf ? 'pdf' : 'image';
-            const cleanBase = fileName.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
-            const uniqueName = `${Date.now()}-${cleanBase}`;
-            const targetDir = isPdf ? 'public/docs/certificates' : 'public/images/certificates';
-
-            // Ensure destination directory exists and write file
-            await Bun.write(`${targetDir}/.keep`, '');
-            const targetPath = `${targetDir}/${uniqueName}`;
-            await Bun.write(targetPath, file);
-
-            const publicUrl = isPdf
-              ? `/docs/certificates/${uniqueName}`
-              : `/images/certificates/${uniqueName}`;
-
-            return {
-              status: 'success',
-              message: 'Certificate uploaded successfully',
-              data: {
-                url: publicUrl,
-                type,
-                fileName: uniqueName,
-              },
-            };
-          } catch (err: any) {
-            console.error('❌ Error uploading certificate:', err?.message || err);
-            set.status = 500;
-            return {
-              status: 'error',
-              message: 'Failed to upload certificate file',
-            };
-          }
-        },
-        {
-          detail: {
-            summary: 'Upload Certificate (PDF or Image)',
-            description: 'Uploads an experience completion certificate (PDF or Image) to public assets.',
-            tags: ['Admin Uploads'],
-            security: [{ bearerAuth: [] }],
           },
-        }
-      )
+          {
+            detail: {
+              summary: 'Upload Certificate (PDF or Image)',
+              description: 'Uploads an experience completion certificate (PDF or Image) to public assets.',
+              tags: ['Admin Uploads'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+        .post(
+          '/image',
+          async ({ body, set }) => {
+            try {
+              const file = (body as any)?.file;
+              if (!file) {
+                set.status = 400;
+                return {
+                  status: 'error',
+                  message: 'No image file provided or invalid file payload.',
+                };
+              }
+
+              const fileName = file.name || 'image.jpg';
+              const ext = fileName.split('.').pop()?.toLowerCase() || '';
+              const allowedExts = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'];
+              if (!allowedExts.includes(ext)) {
+                set.status = 400;
+                return {
+                  status: 'error',
+                  message: 'Invalid image format. Allowed formats: PNG, JPG, JPEG, WEBP, GIF, SVG.',
+                };
+              }
+
+              const cleanBase = fileName.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
+              const uniqueName = `${Date.now()}-${cleanBase}`;
+              const targetDir = 'public/images/articles';
+
+              // Ensure destination directory exists and write file
+              await Bun.write(`${targetDir}/.keep`, '');
+              const targetPath = `${targetDir}/${uniqueName}`;
+              await Bun.write(targetPath, file);
+
+              const publicUrl = `/images/articles/${uniqueName}`;
+
+              return {
+                status: 'success',
+                message: 'Image uploaded successfully',
+                data: {
+                  url: publicUrl,
+                  fileName: uniqueName,
+                },
+              };
+            } catch (err: any) {
+              console.error('❌ Error uploading article image:', err?.message || err);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to upload image file',
+              };
+            }
+          },
+          {
+            detail: {
+              summary: 'Upload Article Image',
+              description: 'Uploads an inline image for articles into public/images/articles.',
+              tags: ['Admin Uploads'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
     )
 
     // =============================================================
@@ -1520,6 +1602,531 @@ export const createAdminRoutes = (options?: AdminRouteOptions) => {
             detail: {
               summary: 'Delete Tech Stack',
               tags: ['Admin Tech Stacks'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+    )
+
+    // =============================================================
+    // 5. Admin Articles / Blog CRUD (/api/admin/articles)
+    // =============================================================
+    .group('/articles', (articleGroup) =>
+      articleGroup
+        // GET /api/admin/articles - List all articles
+        .get(
+          '',
+          async ({ set }) => {
+            const db = options?.db || createDbConnection();
+            try {
+              const results = await db
+                .select()
+                .from(articles)
+                .orderBy(desc(articles.createdAt));
+
+              return {
+                status: 'success',
+                data: results || [],
+              };
+            } catch (err: any) {
+              console.error('❌ Database error listing admin articles:', err?.message || err);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to retrieve articles',
+              };
+            }
+          },
+          {
+            detail: {
+              summary: 'List Articles (Admin)',
+              description: 'Lists all articles including drafts and published posts.',
+              tags: ['Admin Articles'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+
+        // GET /api/admin/articles/:id - Article detail
+        .get(
+          '/:id',
+          async ({ params, set }) => {
+            const db = options?.db || createDbConnection();
+            try {
+              const articleList = await db
+                .select()
+                .from(articles)
+                .where(eq(articles.id, params.id))
+                .limit(1);
+
+              if (!articleList || articleList.length === 0) {
+                set.status = 404;
+                return {
+                  status: 'error',
+                  message: 'Article not found',
+                };
+              }
+
+              return {
+                status: 'success',
+                data: articleList[0],
+              };
+            } catch (err: any) {
+              console.error('❌ Database error retrieving admin article:', err?.message || err);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to retrieve article',
+              };
+            }
+          },
+          {
+            params: t.Object({
+              id: t.Numeric({ description: 'Numeric article ID' }),
+            }),
+            detail: {
+              summary: 'Get Article Detail (Admin)',
+              tags: ['Admin Articles'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+
+        // POST /api/admin/articles - Create article
+        .post(
+          '',
+          async ({ body, set }) => {
+            const db = options?.db || createDbConnection();
+            try {
+              const targetSlug =
+                body.slug && body.slug.trim() !== ''
+                  ? generateSlug(body.slug)
+                  : generateSlug(body.title);
+
+              if (!targetSlug) {
+                set.status = 400;
+                return {
+                  status: 'error',
+                  message: 'Invalid article title or slug: unable to generate valid slug',
+                };
+              }
+
+              const existing = await db
+                .select({ id: articles.id })
+                .from(articles)
+                .where(eq(articles.slug, targetSlug))
+                .limit(1);
+
+              if (existing && existing.length > 0) {
+                set.status = 409;
+                return {
+                  status: 'error',
+                  message: 'An article with this slug already exists',
+                };
+              }
+
+              const readTime =
+                body.readTime && body.readTime.trim() !== ''
+                  ? body.readTime.trim()
+                  : calculateReadTime(body.content);
+
+              const isPublished = body.isPublished ?? true;
+              const newArticleData = {
+                title: body.title.trim(),
+                slug: targetSlug,
+                excerpt:
+                  body.excerpt && body.excerpt.trim() !== ''
+                    ? body.excerpt.trim()
+                    : body.content.slice(0, 160).trim().replace(/\n+/g, ' ') + '...',
+                content: body.content,
+                category: body.category && body.category.trim() !== '' ? body.category.trim() : 'QA & Testing',
+                tags: body.tags && body.tags.trim() !== '' ? body.tags.trim() : null,
+                readTime,
+                coverImageUrl: body.coverImageUrl && body.coverImageUrl.trim() !== '' ? body.coverImageUrl.trim() : null,
+                isPublished,
+                publishedAt: new Date(),
+              };
+
+              const insertResult = await db.insert(articles).values(newArticleData);
+              const insertedId =
+                insertResult?.[0]?.insertId ||
+                (Array.isArray(insertResult) && insertResult[0]?.id) ||
+                1;
+
+              const created = await db
+                .select()
+                .from(articles)
+                .where(eq(articles.id, insertedId))
+                .limit(1);
+
+              set.status = 201;
+              return {
+                status: 'success',
+                message: 'Article created successfully',
+                data: created[0] || { ...newArticleData, id: insertedId },
+              };
+            } catch (err: any) {
+              console.error('❌ Error creating article:', err?.message || err);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to create article',
+              };
+            }
+          },
+          {
+            body: t.Object({
+              title: t.String({ minLength: 3 }),
+              slug: t.Optional(t.String()),
+              excerpt: t.Optional(t.String()),
+              content: t.String({ minLength: 10 }),
+              category: t.Optional(t.String()),
+              tags: t.Optional(t.Nullable(t.String())),
+              readTime: t.Optional(t.String()),
+              coverImageUrl: t.Optional(t.Nullable(t.String())),
+              isPublished: t.Optional(t.Boolean()),
+            }),
+            detail: {
+              summary: 'Create Article (Admin)',
+              tags: ['Admin Articles'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+
+        // PUT /api/admin/articles/:id - Update article
+        .put(
+          '/:id',
+          async ({ params, body, set }) => {
+            const db = options?.db || createDbConnection();
+            try {
+              const existing = await db
+                .select()
+                .from(articles)
+                .where(eq(articles.id, params.id))
+                .limit(1);
+
+              if (!existing || existing.length === 0) {
+                set.status = 404;
+                return {
+                  status: 'error',
+                  message: 'Article not found',
+                };
+              }
+
+              let targetSlug = existing[0].slug;
+              if (body.slug && body.slug.trim() !== '') {
+                targetSlug = generateSlug(body.slug);
+              } else if (body.title && body.title.trim() !== existing[0].title) {
+                targetSlug = generateSlug(body.title);
+              }
+
+              if (targetSlug !== existing[0].slug) {
+                const collision = await db
+                  .select({ id: articles.id })
+                  .from(articles)
+                  .where(and(eq(articles.slug, targetSlug), ne(articles.id, params.id)))
+                  .limit(1);
+
+                if (collision && collision.length > 0) {
+                  set.status = 409;
+                  return {
+                    status: 'error',
+                    message: 'An article with this slug already exists',
+                  };
+                }
+              }
+
+              const readTime =
+                body.readTime && body.readTime.trim() !== ''
+                  ? body.readTime.trim()
+                  : body.content
+                    ? calculateReadTime(body.content)
+                    : existing[0].readTime;
+
+              const updateData: any = {};
+              if (body.title !== undefined) updateData.title = body.title.trim();
+              if (targetSlug !== undefined) updateData.slug = targetSlug;
+              if (body.excerpt !== undefined) updateData.excerpt = body.excerpt.trim();
+              if (body.content !== undefined) updateData.content = body.content;
+              if (body.category !== undefined) updateData.category = body.category.trim();
+              if (body.tags !== undefined) updateData.tags = body.tags ? body.tags.trim() : null;
+              if (readTime !== undefined) updateData.readTime = readTime;
+              if (body.coverImageUrl !== undefined) {
+                updateData.coverImageUrl = body.coverImageUrl ? body.coverImageUrl.trim() : null;
+              }
+              if (body.isPublished !== undefined) {
+                updateData.isPublished = body.isPublished;
+                if (body.isPublished && !existing[0].isPublished) {
+                  updateData.publishedAt = new Date();
+                }
+              }
+
+              await db.update(articles).set(updateData).where(eq(articles.id, params.id));
+
+              const updated = await db
+                .select()
+                .from(articles)
+                .where(eq(articles.id, params.id))
+                .limit(1);
+
+              return {
+                status: 'success',
+                message: 'Article updated successfully',
+                data: updated[0],
+              };
+            } catch (err: any) {
+              console.error('❌ Error updating article:', err?.message || err);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to update article',
+              };
+            }
+          },
+          {
+            params: t.Object({
+              id: t.Numeric({ description: 'Numeric article ID' }),
+            }),
+            body: t.Object({
+              title: t.Optional(t.String({ minLength: 3 })),
+              slug: t.Optional(t.String()),
+              excerpt: t.Optional(t.String()),
+              content: t.Optional(t.String({ minLength: 10 })),
+              category: t.Optional(t.String()),
+              tags: t.Optional(t.Nullable(t.String())),
+              readTime: t.Optional(t.String()),
+              coverImageUrl: t.Optional(t.Nullable(t.String())),
+              isPublished: t.Optional(t.Boolean()),
+            }),
+            detail: {
+              summary: 'Update Article (Admin)',
+              tags: ['Admin Articles'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+
+        // PATCH /api/admin/articles/:id/toggle-publish - Quick publish/draft toggle
+        .patch(
+          '/:id/toggle-publish',
+          async ({ params, set }) => {
+            const db = options?.db || createDbConnection();
+            try {
+              const existing = await db
+                .select()
+                .from(articles)
+                .where(eq(articles.id, params.id))
+                .limit(1);
+
+              if (!existing || existing.length === 0) {
+                set.status = 404;
+                return {
+                  status: 'error',
+                  message: 'Article not found',
+                };
+              }
+
+              const newStatus = !existing[0].isPublished;
+              const updateData: any = { isPublished: newStatus };
+              if (newStatus) {
+                updateData.publishedAt = new Date();
+              }
+
+              await db.update(articles).set(updateData).where(eq(articles.id, params.id));
+
+              return {
+                status: 'success',
+                message: `Article ${newStatus ? 'published' : 'moved to drafts'} successfully`,
+                data: { id: params.id, isPublished: newStatus },
+              };
+            } catch (err: any) {
+              console.error('❌ Error toggling article publish status:', err?.message || err);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to toggle publish status',
+              };
+            }
+          },
+          {
+            params: t.Object({
+              id: t.Numeric({ description: 'Numeric article ID' }),
+            }),
+            detail: {
+              summary: 'Toggle Article Publish Status (Admin)',
+              tags: ['Admin Articles'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+
+        // DELETE /api/admin/articles/:id - Delete article
+        .delete(
+          '/:id',
+          async ({ params, set }) => {
+            const db = options?.db || createDbConnection();
+            try {
+              const existing = await db
+                .select()
+                .from(articles)
+                .where(eq(articles.id, params.id))
+                .limit(1);
+
+              if (!existing || existing.length === 0) {
+                set.status = 404;
+                return {
+                  status: 'error',
+                  message: 'Article not found',
+                };
+              }
+
+              await db.delete(articles).where(eq(articles.id, params.id));
+
+              return {
+                status: 'success',
+                message: 'Article deleted successfully',
+              };
+            } catch (err: any) {
+              console.error('❌ Error deleting article:', err?.message || err);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to delete article',
+              };
+            }
+          },
+          {
+            params: t.Object({
+              id: t.Numeric({ description: 'Numeric article ID' }),
+            }),
+            detail: {
+              summary: 'Delete Article (Admin)',
+              tags: ['Admin Articles'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+    )
+
+    // =============================================================
+    // 6. Admin 404 Music Scene Settings (/api/admin/error-scene)
+    // =============================================================
+    .group('/error-scene', (sceneGroup) =>
+      sceneGroup
+        // GET /api/admin/error-scene - Get current 404 scene configuration
+        .get(
+          '',
+          async () => {
+            const db = options?.db || createDbConnection();
+            try {
+              const scenes = await db
+                .select()
+                .from(errorScenes)
+                .limit(1);
+
+              return {
+                status: 'success',
+                data: scenes[0] || DEFAULT_ERROR_SCENE,
+              };
+            } catch (err: any) {
+              console.error('❌ Error retrieving error scene settings:', err?.message || err);
+              return {
+                status: 'success',
+                data: DEFAULT_ERROR_SCENE,
+              };
+            }
+          },
+          {
+            detail: {
+              summary: 'Get 404 Music Scene Settings (Admin)',
+              tags: ['Admin 404 Scene'],
+              security: [{ bearerAuth: [] }],
+            },
+          }
+        )
+        // PUT /api/admin/error-scene - Update 404 scene configuration
+        .put(
+          '',
+          async ({ body, set }) => {
+            const db = options?.db || createDbConnection();
+            try {
+              const youtubeVideoId = extractYouTubeVideoId(body.youtubeUrl);
+
+              const existing = await db
+                .select()
+                .from(errorScenes)
+                .limit(1);
+
+              const payload = {
+                headline: body.headline?.trim() || 'Wrong Scene?',
+                youtubeUrl: body.youtubeUrl?.trim() || '',
+                youtubeVideoId: youtubeVideoId,
+                artist: body.artist?.trim() || '',
+                songTitle: body.songTitle?.trim() || '',
+                lyricQuote: body.lyricQuote?.trim() || '',
+                message: body.message?.trim() || '',
+                actionHint: body.actionHint?.trim() || '',
+                buttonText: body.buttonText?.trim() || 'Play',
+                buttonUrl: body.buttonUrl?.trim() || '/',
+                isActive: body.isActive !== undefined ? Boolean(body.isActive) : true,
+              };
+
+              if (existing && existing.length > 0) {
+                await db
+                  .update(errorScenes)
+                  .set(payload)
+                  .where(eq(errorScenes.id, existing[0].id));
+
+                const updated = await db
+                  .select()
+                  .from(errorScenes)
+                  .where(eq(errorScenes.id, existing[0].id))
+                  .limit(1);
+
+                return {
+                  status: 'success',
+                  message: '404 Scene updated successfully',
+                  data: updated[0],
+                };
+              } else {
+                await db.insert(errorScenes).values(payload);
+                const inserted = await db
+                  .select()
+                  .from(errorScenes)
+                  .limit(1);
+
+                return {
+                  status: 'success',
+                  message: '404 Scene created successfully',
+                  data: inserted[0],
+                };
+              }
+            } catch (err: any) {
+              console.error('❌ Error updating 404 scene:', err?.message || err);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to update 404 Scene settings',
+              };
+            }
+          },
+          {
+            body: t.Object({
+              headline: t.Optional(t.String()),
+              youtubeUrl: t.String({ minLength: 1, description: 'YouTube URL or video ID' }),
+              artist: t.String({ minLength: 1, description: 'Artist name' }),
+              songTitle: t.String({ minLength: 1, description: 'Song title' }),
+              lyricQuote: t.String({ minLength: 1, description: 'Lyrical line or quote' }),
+              message: t.String({ minLength: 1, description: 'Contextual narrative message' }),
+              actionHint: t.Optional(t.String()),
+              buttonText: t.Optional(t.String()),
+              buttonUrl: t.Optional(t.String()),
+              isActive: t.Optional(t.Boolean()),
+            }),
+            detail: {
+              summary: 'Update 404 Music Scene Settings (Admin)',
+              tags: ['Admin 404 Scene'],
               security: [{ bearerAuth: [] }],
             },
           }

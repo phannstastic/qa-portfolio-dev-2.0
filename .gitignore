@@ -28,3 +28,7 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Test uploads
+public/images/articles/*test-story-photo*
+

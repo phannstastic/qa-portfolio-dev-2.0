@@ -96,6 +96,26 @@ export const techStacks = mysqlTable('tech_stacks', {
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 });
 
+/**
+ * Articles / Blog Table
+ * Technical writing, QA engineering case studies, and testing insights.
+ */
+export const articles = mysqlTable('articles', {
+  id: int('id').autoincrement().primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 191 }).notNull().unique(),
+  excerpt: text('excerpt').notNull(),
+  content: text('content').notNull(), // Markdown formatted article body
+  category: varchar('category', { length: 100 }).default('QA & Testing').notNull(),
+  tags: varchar('tags', { length: 255 }), // Comma-separated tags
+  readTime: varchar('read_time', { length: 50 }).default('3 min read').notNull(),
+  coverImageUrl: varchar('cover_image_url', { length: 255 }),
+  isPublished: boolean('is_published').default(true).notNull(),
+  publishedAt: timestamp('published_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
@@ -110,3 +130,32 @@ export type NewContact = typeof contacts.$inferInsert;
 
 export type TechStack = typeof techStacks.$inferSelect;
 export type NewTechStack = typeof techStacks.$inferInsert;
+
+export type Article = typeof articles.$inferSelect;
+export type NewArticle = typeof articles.$inferInsert;
+
+/**
+ * 404 Music & Scene Settings Table
+ * Manage the custom music video, artist, lyrics, and narrative for 404 "Wrong Scene?" page.
+ */
+export const errorScenes = mysqlTable('error_scenes', {
+  id: int('id').autoincrement().primaryKey(),
+  headline: varchar('headline', { length: 255 }).default('Wrong Scene?').notNull(),
+  youtubeUrl: varchar('youtube_url', { length: 500 }).default('https://www.youtube.com/watch?v=N2kz9EOtIPQ').notNull(),
+  youtubeVideoId: varchar('youtube_video_id', { length: 100 }).default('N2kz9EOtIPQ').notNull(),
+  artist: varchar('artist', { length: 150 }).default('eaJ').notNull(),
+  songTitle: varchar('song_title', { length: 150 }).default('pause').notNull(),
+  lyricQuote: text('lyric_quote').notNull(),
+  message: text('message').notNull(),
+  actionHint: text('action_hint').notNull(),
+  buttonText: varchar('button_text', { length: 50 }).default('Play').notNull(),
+  buttonUrl: varchar('button_url', { length: 255 }).default('/').notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
+});
+
+export type ErrorScene = typeof errorScenes.$inferSelect;
+export type NewErrorScene = typeof errorScenes.$inferInsert;
+
+
