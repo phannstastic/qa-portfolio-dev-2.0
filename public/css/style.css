@@ -2904,20 +2904,20 @@ html[data-theme="dark"] .feedback-banner.error {
 
 .blog-hero-title {
   font-family: var(--font-display);
-  font-size: clamp(1.85rem, 3.6vw, 2.3rem);
+  font-size: 2.75rem;
   font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--text-primary);
-  line-height: 1.22;
+  line-height: 1.2;
   margin-bottom: 1rem;
 }
 
 .blog-hero-desc {
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--text-secondary);
   line-height: 1.65;
   margin: 0 auto;
-  max-width: 620px;
+  max-width: 580px;
 }
 
 /* Blog Filter & Search Toolbar */
@@ -3135,9 +3135,9 @@ html.dark .editorial-row:hover {
 
 .editorial-title {
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2.3vw, 1.55rem);
-  font-weight: 700;
-  line-height: 1.35;
+  font-size: clamp(1.08rem, 1.7vw, 1.28rem);
+  font-weight: 650;
+  line-height: 1.4;
   color: var(--text-primary);
   letter-spacing: -0.015em;
   margin-bottom: 0.65rem;
@@ -3456,10 +3456,10 @@ html.dark .empty-state-watermark {
 
 .article-reader-title {
   font-family: var(--font-display);
-  font-size: clamp(1.55rem, 2.35vw, 2.05rem);
+  font-size: clamp(1.35rem, 2.1vw, 1.75rem);
   font-weight: 700;
-  line-height: 1.32;
-  letter-spacing: -0.025em;
+  line-height: 1.34;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   margin-bottom: 0;
   text-wrap: balance;
@@ -3467,8 +3467,8 @@ html.dark .empty-state-watermark {
 
 @media (max-width: 768px) {
   .article-reader-title {
-    font-size: 1.45rem;
-    line-height: 1.34;
+    font-size: 1.25rem;
+    line-height: 1.36;
   }
 }
 
